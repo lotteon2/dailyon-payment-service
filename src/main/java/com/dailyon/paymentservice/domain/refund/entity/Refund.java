@@ -27,7 +27,7 @@ public class Refund extends BaseEntity {
 
   private Integer Long;
 
-  @Column(columnDefinition = "default 0")
+  @Column(columnDefinition = "int default 0")
   private int points;
 
   @Builder
