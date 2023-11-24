@@ -1,7 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
-import com.dailyon.paymentservice.domain.payment.client.KakaopayFeignClient;
+import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
 import lombok.RequiredArgsConstructor;

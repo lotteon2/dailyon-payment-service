@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.domain.payment.config;
+package com.dailyon.paymentservice.config;
 
 import feign.Logger;
 import feign.RequestInterceptor;

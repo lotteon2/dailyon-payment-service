@@ -1,6 +1,6 @@
-package com.dailyon.paymentservice.domain.payment.client;
+package com.dailyon.paymentservice.domain.client;
 
-import com.dailyon.paymentservice.domain.payment.config.KakaopayFeignConfig;
+import com.dailyon.paymentservice.config.KakaopayFeignConfig;
 import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.util.MultiValueMap;
