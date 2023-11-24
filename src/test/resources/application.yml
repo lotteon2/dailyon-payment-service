@@ -32,4 +32,3 @@ logging:
       springframework:
         transaction:
           interceptor: TRACE
-

@@ -1,50 +1,45 @@
 package com.dailyon.paymentservice.domain.payment.paymanger;
 
-import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
+import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
+import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import javax.annotation.PostConstruct;
-import java.time.Duration;
-
-@Component
 @RequiredArgsConstructor
+@Component
 @Slf4j
 public class KakaoPayManager {
 
   private final KakaopayFeignClient client;
-  private final Environment environment;
-  private final RedisTemplate<String, KakaopayReadyResponseVO>
-      redisTemplate; // TODO : DynamoDB 세팅되면 바꿈
+  private final RedisRepository redisRepository; // TODO : DynamoDB 세팅되면 바꿈
 
+  @Value("${kakaopay.cid}")
   private String CID;
-  private String KAKAOPAY_ADMIN_KEY;
-  private String APPROVAL_URL;
-  private String FAIL_URL;
-  private String CANCEL_URL;
 
-  @PostConstruct
-  private void init() {
-    CID = environment.getProperty("kakaopay.cid");
-    KAKAOPAY_ADMIN_KEY = "KakaoAK " + environment.getProperty("kakaopay.admin_key");
-    APPROVAL_URL = environment.getProperty("kakaopay.approval_url");
-    FAIL_URL = environment.getProperty("kakaopay.fail_url");
-    CANCEL_URL = environment.getProperty("kakaopay.cancel_url");
-  }
+  @Value("${kakaopay.admin_key}")
+  private String KAKAOPAY_ADMIN_KEY;
+
+  @Value("${kakaopay.approval_url}")
+  private String APPROVAL_URL;
+
+  @Value("${kakaopay.fail_url}")
+  private String FAIL_URL;
+
+  @Value("${kakaopay.cancel_url}")
+  private String CANCEL_URL;
 
   public KakaopayReadyResponseVO ready(
       Long memberId, String orderId, PaymentReadyRequest.PointPaymentReadyRequest request) {
     MultiValueMap data = createPointPaymentRequest(orderId, memberId, request);
-    KakaopayReadyResponseVO responseVO = client.ready(KAKAOPAY_ADMIN_KEY, data);
-    redisTemplate.opsForValue().set(orderId, responseVO, Duration.ofMinutes(5));
+    KakaopayReadyResponseVO responseVO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    redisRepository.saveReadyInfo(orderId, responseVO);
     return responseVO;
   }
 

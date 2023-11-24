@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
     url = "https://kapi.kakao.com",
     configuration = KakaopayFeignConfig.class)
 public interface KakaopayFeignClient {
-
   @PostMapping("/v1/payment/ready")
   KakaopayReadyResponseVO ready(
       @RequestHeader(value = "Authorization") String authorization, @RequestBody MultiValueMap map);
