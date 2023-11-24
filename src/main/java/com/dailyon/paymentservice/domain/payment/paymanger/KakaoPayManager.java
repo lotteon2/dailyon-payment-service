@@ -3,7 +3,7 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
 import com.dailyon.paymentservice.domain.payment.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
-import com.dailyon.paymentservice.domain.payment.vo.kakaopay.KakaopayReadyResponseVO;
+import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
@@ -38,18 +38,17 @@ public class KakaoPayManager {
     APPROVAL_URL = environment.getProperty("kakaopay.approval_url");
     FAIL_URL = environment.getProperty("kakaopay.fail_url");
     CANCEL_URL = environment.getProperty("kakaopay.cancel_url");
-    log.info("approval_url : {}", APPROVAL_URL);
   }
 
   public KakaopayReadyResponseVO ready(
       Long memberId, String orderId, PaymentReadyRequest.PointPaymentReadyRequest request) {
-    MultiValueMap data = createMultiValueMap(orderId, memberId, request);
+    MultiValueMap data = createPointPaymentRequest(orderId, memberId, request);
     KakaopayReadyResponseVO responseVO = client.ready(KAKAOPAY_ADMIN_KEY, data);
     redisTemplate.opsForValue().set(orderId, responseVO, Duration.ofMinutes(5));
     return responseVO;
   }
 
-  private MultiValueMap createMultiValueMap(
+  private MultiValueMap createPointPaymentRequest(
       String orderId, Long memberId, PaymentReadyRequest.PointPaymentReadyRequest request) {
     MultiValueMap<String, String> readyRequestMap = new LinkedMultiValueMap<>();
     readyRequestMap.add("cid", CID);

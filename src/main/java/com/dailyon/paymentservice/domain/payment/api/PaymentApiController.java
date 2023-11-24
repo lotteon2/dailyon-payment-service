@@ -4,7 +4,7 @@ import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
-import com.dailyon.paymentservice.domain.payment.vo.kakaopay.KakaopayReadyResponseVO;
+import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +17,13 @@ public class PaymentApiController {
   private final KakaoPayManager kakaoPayManager;
   private final PaymentService paymentService;
 
-  // TODO: TEST를 위해 required false로 함. 추후 바꿈
+  // TODO: TEST를 위해 required false + defaultValue설정 함 나중에 바꿈
   @PostMapping("/point-payments/ready")
   public ResponseEntity<String> kakaopayReady(
-      @RequestHeader(value = "memberId", required = false,defaultValue = "1") Long memberId,
+      @RequestHeader(value = "memberId", required = false, defaultValue = "1") Long memberId,
       @RequestBody PaymentReadyRequest.PointPaymentReadyRequest request) {
     String orderId = OrderNoGenerator.generate(memberId);
-    KakaopayReadyResponseVO readyResponse = kakaoPayManager.ready(1L, orderId, request);
+    KakaopayReadyResponseVO readyResponse = kakaoPayManager.ready(memberId, orderId, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(readyResponse.getNextRedirectAppUrl());
   }
 }
