@@ -1,7 +1,7 @@
 package com.dailyon.paymentservice.domain.client;
 
 import com.dailyon.paymentservice.config.MemberFeignConfig;
-import com.dailyon.paymentservice.domain.client.request.MemberPointUpdateRequest;
+import com.dailyon.paymentservice.domain.payment.dto.MemberPointUpdateDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface MemberFeignClient {
 
     @PostMapping
-    void pointRecharge(@RequestHeader(value = "memberId") Long memberId, @RequestBody MemberPointUpdateRequest request);
+    void pointRecharge(@RequestHeader(value = "memberId") Long memberId, @RequestBody MemberPointUpdateDTO request);
 }

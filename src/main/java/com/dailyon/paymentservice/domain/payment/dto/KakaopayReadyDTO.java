@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response;
+package com.dailyon.paymentservice.domain.payment.dto;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -12,7 +12,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class KakaopayReadyResponseVO {
+public class KakaopayReadyDTO {
   private String tid;
   private boolean tmsResult;
   private String nextRedirectPcUrl;

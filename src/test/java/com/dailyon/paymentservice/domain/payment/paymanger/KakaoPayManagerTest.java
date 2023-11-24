@@ -2,8 +2,8 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
-import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ class KakaoPayManagerTest {
   @Test
   void pointPaymentReady() {
     // given
-    KakaopayReadyResponseVO response =
-        new KakaopayReadyResponseVO(
+    KakaopayReadyDTO response =
+        new KakaopayReadyDTO(
             "tid",
             true,
             "nextRedirectPcUrl",
@@ -46,7 +46,7 @@ class KakaoPayManagerTest {
     PaymentReadyRequest.PointPaymentReadyRequest pointPaymentReadyRequest =
         new PaymentReadyRequest.PointPaymentReadyRequest(PaymentMethod.KAKAOPAY, 10000);
     // when
-    KakaopayReadyResponseVO result = kakaoPayManager.ready(1L, "orderId", pointPaymentReadyRequest);
+    KakaopayReadyDTO result = kakaoPayManager.ready(1L, "orderId", pointPaymentReadyRequest);
     // then
     assertThat(result).isNotNull();
     verify(redisRepository, times(1)).saveReadyInfo("orderId", result);

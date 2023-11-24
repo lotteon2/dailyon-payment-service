@@ -1,11 +1,11 @@
-package com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response;
+package com.dailyon.paymentservice.domain.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-public class KakaopayApproveResponseVO {
+public class KakaopayApproveDTO {
   private String aid;
   private String tid;
   private String cid;

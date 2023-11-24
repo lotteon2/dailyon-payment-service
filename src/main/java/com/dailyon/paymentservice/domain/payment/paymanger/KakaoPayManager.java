@@ -3,7 +3,7 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
-import com.dailyon.paymentservice.domain.payment.paymanger.kakaopay.response.KakaopayReadyResponseVO;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +35,10 @@ public class KakaoPayManager {
   @Value("${kakaopay.cancel_url}")
   private String CANCEL_URL;
 
-  public KakaopayReadyResponseVO ready(
+  public KakaopayReadyDTO ready(
       Long memberId, String orderId, PaymentReadyRequest.PointPaymentReadyRequest request) {
     MultiValueMap data = createPointPaymentRequest(orderId, memberId, request);
-    KakaopayReadyResponseVO responseVO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    KakaopayReadyDTO responseVO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     redisRepository.saveReadyInfo(orderId, responseVO);
     return responseVO;
   }
