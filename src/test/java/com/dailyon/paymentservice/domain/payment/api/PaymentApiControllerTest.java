@@ -1,7 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.api;
 
 import com.dailyon.paymentservice.ControllerTestSupport;
-import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
+import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -18,8 +18,8 @@ class PaymentApiControllerTest extends ControllerTestSupport {
   @Test
   void pointPaymentReadyByKakaopay() throws Exception {
     // given
-    PaymentReadyRequest.PointPaymentReadyRequest request =
-        new PaymentReadyRequest.PointPaymentReadyRequest(KAKAOPAY, 250000);
+    PointPaymentRequest.PointPaymentReadyRequest request =
+        new PointPaymentRequest.PointPaymentReadyRequest(KAKAOPAY, 250000);
 
     // when // then
     mockMvc
@@ -35,8 +35,8 @@ class PaymentApiControllerTest extends ControllerTestSupport {
   @Test
   void pointPaymentReadyByNullPayMethod() throws Exception {
     // given
-    PaymentReadyRequest.PointPaymentReadyRequest request =
-        new PaymentReadyRequest.PointPaymentReadyRequest(null, 250000);
+    PointPaymentRequest.PointPaymentReadyRequest request =
+        new PointPaymentRequest.PointPaymentReadyRequest(null, 250000);
 
     // when // then
 
@@ -55,8 +55,8 @@ class PaymentApiControllerTest extends ControllerTestSupport {
   @Test
   void pointPaymentReadyByNullAmount() throws Exception {
     // given
-    PaymentReadyRequest.PointPaymentReadyRequest request =
-        new PaymentReadyRequest.PointPaymentReadyRequest(null, 250000);
+    PointPaymentRequest.PointPaymentReadyRequest request =
+        new PointPaymentRequest.PointPaymentReadyRequest(null, 250000);
 
     // when // then
     mockMvc

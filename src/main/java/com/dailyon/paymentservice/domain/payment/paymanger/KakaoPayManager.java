@@ -1,7 +1,8 @@
 package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
-import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
+import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
@@ -35,21 +36,30 @@ public class KakaoPayManager {
   @Value("${kakaopay.cancel_url}")
   private String CANCEL_URL;
 
+  // TODO : 나중 리팩토링 예정
   public KakaopayReadyDTO ready(
-      Long memberId, String orderId, PaymentReadyRequest.PointPaymentReadyRequest request) {
-    MultiValueMap data = toPointPaymentDTO(orderId, memberId, request);
-    KakaopayReadyDTO responseVO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
-    redisRepository.saveReadyInfo(orderId, responseVO);
-    return responseVO;
+      Long memberId, String orderId, PointPaymentRequest.PointPaymentReadyRequest request) {
+    MultiValueMap data = toPointPaymentReadyDTO(orderId, memberId, request);
+    KakaopayReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    redisRepository.saveReadyInfo(orderId, responseDTO);
+    return responseDTO;
   }
 
-  private MultiValueMap toPointPaymentDTO(
-      String orderId, Long memberId, PaymentReadyRequest.PointPaymentReadyRequest request) {
+  // TODO : 나중 리팩토링 예정
+  public KakaopayApproveDTO approve(
+      Long memberId, String tid, PointPaymentRequest.PointPaymentApproveRequest request) {
+    MultiValueMap data = toPointPaymentApproveDTO(memberId, tid, request);
+    KakaopayApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    return responseDTO;
+  }
+
+  private MultiValueMap toPointPaymentReadyDTO(
+      String orderId, Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
     MultiValueMap<String, String> readyDTOMap = new LinkedMultiValueMap<>();
     readyDTOMap.add("cid", CID);
     readyDTOMap.add("partner_order_id", orderId);
     readyDTOMap.add("partner_user_id", memberId.toString());
-    readyDTOMap.add("item_name", PaymentType.POINT.name());
+    readyDTOMap.add("item_name", PaymentType.POINT.getMessage());
     readyDTOMap.add("quantity", "1");
     readyDTOMap.add("total_amount", request.getTotalAmount().toString());
     readyDTOMap.add("tax_free_amount", "0");
@@ -57,5 +67,16 @@ public class KakaoPayManager {
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
     return readyDTOMap;
+  }
+
+  private MultiValueMap toPointPaymentApproveDTO(
+      Long memberId, String tid, PointPaymentRequest.PointPaymentApproveRequest request) {
+    MultiValueMap<String, String> approveDTOMap = new LinkedMultiValueMap<>();
+    approveDTOMap.add("cid", CID);
+    approveDTOMap.add("tid", tid);
+    approveDTOMap.add("partner_order_id", request.getOrderId());
+    approveDTOMap.add("partner_user_id", memberId.toString());
+    approveDTOMap.add("pg_token", request.getPgToken());
+    return approveDTOMap;
   }
 }

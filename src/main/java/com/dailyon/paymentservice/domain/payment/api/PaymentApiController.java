@@ -1,6 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.api;
 
-import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
+import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class PaymentApiController {
   @PostMapping("/point-payments/ready")
   public ResponseEntity<String> kakaopayReady(
       @RequestHeader(value = "memberId", required = false, defaultValue = "1") Long memberId,
-      @Valid @RequestBody PaymentReadyRequest.PointPaymentReadyRequest request) {
+      @Valid @RequestBody PointPaymentRequest.PointPaymentReadyRequest request) {
     String nextUrl = paymentFacade.pointPaymentReady(memberId, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }

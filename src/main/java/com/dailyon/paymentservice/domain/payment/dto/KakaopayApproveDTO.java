@@ -1,6 +1,8 @@
 package com.dailyon.paymentservice.domain.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,18 +10,20 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class KakaopayApproveDTO {
   private String aid;
   private String tid;
   private String cid;
 
-  @JsonProperty("partner_order_id") // 얘는 다르다.
+  @JsonProperty("partner_order_id")
   private String orderId;
 
-  @JsonProperty("partner_user_id") // 얘는 다르다.
+  @JsonProperty("partner_user_id")
   private String userId;
 
-  @JsonProperty("payment_method_type") // 얘는 다르다.
+  @JsonProperty("payment_method_type")
   private String paymentMethod;
 
   @JsonProperty("item_name")
@@ -37,6 +41,8 @@ public class KakaopayApproveDTO {
 
   @Getter
   @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
   public static class Amount {
     private Integer total;
 

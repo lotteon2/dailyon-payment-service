@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-public class PaymentReadyRequest {
+public class PointPaymentRequest {
 
   @Getter
   @NoArgsConstructor
