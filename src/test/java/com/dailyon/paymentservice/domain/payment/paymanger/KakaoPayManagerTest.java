@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +63,19 @@ class KakaoPayManagerTest {
   @Test
   void pointPaymentApprove() {
     // given
+
+    KakaopayReadyDTO readyDTO =
+        KakaopayReadyDTO.builder()
+            .tid("tid")
+            .tmsResult(true)
+            .nextRedirectPcUrl("nextRedirectPcUrl")
+            .nextRedirectMobileUrl("nextRedirectMobileUrl")
+            .nextRedirectAppUrl("nextRedirectAppUrl")
+            .androidAppScheme("androidAppScheme")
+            .iosAppScheme("iosAppScheme")
+            .createdAt("createdAt")
+            .build();
+
     String orderId = OrderNoGenerator.generate(1L);
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
@@ -83,12 +97,14 @@ class KakaoPayManagerTest {
             .build();
 
     given(kakaopayFeignClient.approve(anyString(), any())).willReturn(approveDTO);
+    given(redisRepository.findByOrderId(orderId)).willReturn(Optional.ofNullable(readyDTO));
     PointPaymentRequest.PointPaymentApproveRequest request =
         new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
     // when
-    KakaopayApproveDTO result = kakaoPayManager.approve(1L, "tid", request);
+    KakaopayApproveDTO result = kakaoPayManager.approve(1L, request);
     // then
     assertThat(result).isNotNull();
     verify(kakaopayFeignClient, times(1)).approve(anyString(), any());
+    verify(redisRepository, times(1)).findByOrderId(orderId);
   }
 }

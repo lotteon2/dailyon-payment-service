@@ -5,6 +5,7 @@ import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,12 @@ public class KakaoPayManager {
 
   // TODO : 나중 리팩토링 예정
   public KakaopayApproveDTO approve(
-      Long memberId, String tid, PointPaymentRequest.PointPaymentApproveRequest request) {
+      Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
+    String tid =
+        redisRepository
+            .findByOrderId(request.getOrderId())
+            .orElseThrow(ExpiredPaymentTimeException::new)
+            .getTid();
     MultiValueMap data = toPointPaymentApproveDTO(memberId, tid, request);
     KakaopayApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
