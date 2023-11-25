@@ -1,5 +1,8 @@
 package com.dailyon.paymentservice.domain.payment.dto;
 
+import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
+import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +41,15 @@ public class KakaopayApproveDTO {
   private LocalDateTime approvedAt;
 
   private Amount amount;
+
+  public CreatePaymentServiceRequest toServiceRequest(PaymentType type, PaymentMethod method) {
+    return CreatePaymentServiceRequest.builder()
+        .memberId(Long.valueOf(userId))
+        .type(type)
+        .method(method)
+        .totalAmount(amount.getTotal())
+        .build();
+  }
 
   @Getter
   @NoArgsConstructor

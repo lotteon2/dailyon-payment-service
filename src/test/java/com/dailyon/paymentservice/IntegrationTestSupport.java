@@ -18,7 +18,6 @@ import org.springframework.test.context.TestPropertySource;
     })
 @SpringBootTest
 public abstract class IntegrationTestSupport {
-  @MockBean protected KakaopayFeignClient kakaopayFeignClient;
   @MockBean protected MemberFeignClient memberFeignClient;
   @MockBean protected KakaoPayManager kakaoPayManager;
 }

@@ -59,6 +59,7 @@ public class KakaoPayManager {
     return responseDTO;
   }
 
+  // TODO : 클래스로 빼서 관리할예정
   private MultiValueMap toPointPaymentReadyDTO(
       String orderId, Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
     MultiValueMap<String, String> readyDTOMap = new LinkedMultiValueMap<>();
