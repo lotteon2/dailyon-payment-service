@@ -2,6 +2,7 @@ package com.dailyon.paymentservice.domain.payment.implement;
 
 import com.dailyon.paymentservice.domain.payment.entity.KakaopayInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
+import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,16 @@ public class PaymentAppender {
   private final KakaopayInfoRepository kakaopayInfoRepository;
 
   public Long append(Payment payment, String tid) {
-    KakaopayInfo kakaopayInfo = KakaopayInfo.builder().tid(tid).payment(payment).build();
+    PaymentMethod method = payment.getMethod();
     paymentRepository.save(payment);
-    kakaopayInfoRepository.save(kakaopayInfo);
+    switch (method) {
+      case KAKAOPAY:
+        {
+          KakaopayInfo kakaopayInfo = KakaopayInfo.builder().tid(tid).payment(payment).build();
+          kakaopayInfoRepository.save(kakaopayInfo);
+        }
+        break;
+    }
     return payment.getId();
   }
 }
