@@ -22,4 +22,12 @@ public class PaymentApiController {
     String nextUrl = paymentFacade.pointPaymentReady(memberId, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }
+
+  @PostMapping("/point-payments/approve")
+  public ResponseEntity<Long> pointPaymentApprove(
+      @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
+      @Valid @RequestBody PointPaymentRequest.PointPaymentApproveRequest request) {
+    Long paymentId = paymentFacade.pointPaymentApprove(memberId, request);
+    return ResponseEntity.status(HttpStatus.CREATED).body(paymentId);
+  }
 }
