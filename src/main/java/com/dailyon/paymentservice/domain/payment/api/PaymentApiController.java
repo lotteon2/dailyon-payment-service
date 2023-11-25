@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/payments")
@@ -16,7 +18,7 @@ public class PaymentApiController {
   @PostMapping("/point-payments/ready")
   public ResponseEntity<String> kakaopayReady(
       @RequestHeader(value = "memberId", required = false, defaultValue = "1") Long memberId,
-      @RequestBody PaymentReadyRequest.PointPaymentReadyRequest request) {
+      @Valid @RequestBody PaymentReadyRequest.PointPaymentReadyRequest request) {
     String nextUrl = paymentFacade.pointPaymentReady(memberId, request);
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }

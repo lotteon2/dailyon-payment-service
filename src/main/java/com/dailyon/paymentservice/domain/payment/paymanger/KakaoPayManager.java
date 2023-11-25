@@ -2,8 +2,8 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.api.request.PaymentReadyRequest;
-import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
