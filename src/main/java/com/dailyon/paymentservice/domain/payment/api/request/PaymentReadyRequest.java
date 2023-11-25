@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class PaymentReadyRequest {
@@ -19,5 +20,17 @@ public class PaymentReadyRequest {
 
     @NotNull(message = "결제 금액은 필수 입니다.")
     private Integer totalAmount;
+  }
+
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class PointPaymentApproveRequest {
+
+    @NotEmpty(message = "주문번호는 필수 입니다.")
+    private String orderId;
+
+    @NotNull(message = "pgToken은 필수 입니다.")
+    private String pgToken;
   }
 }

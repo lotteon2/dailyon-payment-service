@@ -2,9 +2,12 @@ package com.dailyon.paymentservice.domain.payment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+@Getter
+@NoArgsConstructor
 public class KakaopayApproveDTO {
   private String aid;
   private String tid;
@@ -33,6 +36,7 @@ public class KakaopayApproveDTO {
   private Amount amount;
 
   @Getter
+  @NoArgsConstructor
   public static class Amount {
     private Integer total;
 

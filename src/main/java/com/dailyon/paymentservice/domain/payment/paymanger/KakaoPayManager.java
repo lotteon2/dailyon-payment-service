@@ -37,25 +37,25 @@ public class KakaoPayManager {
 
   public KakaopayReadyDTO ready(
       Long memberId, String orderId, PaymentReadyRequest.PointPaymentReadyRequest request) {
-    MultiValueMap data = createPointPaymentRequest(orderId, memberId, request);
+    MultiValueMap data = toPointPaymentDTO(orderId, memberId, request);
     KakaopayReadyDTO responseVO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     redisRepository.saveReadyInfo(orderId, responseVO);
     return responseVO;
   }
 
-  private MultiValueMap createPointPaymentRequest(
+  private MultiValueMap toPointPaymentDTO(
       String orderId, Long memberId, PaymentReadyRequest.PointPaymentReadyRequest request) {
-    MultiValueMap<String, String> readyRequestMap = new LinkedMultiValueMap<>();
-    readyRequestMap.add("cid", CID);
-    readyRequestMap.add("partner_order_id", orderId);
-    readyRequestMap.add("partner_user_id", memberId.toString());
-    readyRequestMap.add("item_name", PaymentType.POINT.name());
-    readyRequestMap.add("quantity", "1");
-    readyRequestMap.add("total_amount", request.getTotalAmount().toString());
-    readyRequestMap.add("tax_free_amount", "0");
-    readyRequestMap.add("approval_url", APPROVAL_URL + "/" + orderId);
-    readyRequestMap.add("cancel_url", CANCEL_URL);
-    readyRequestMap.add("fail_url", FAIL_URL);
-    return readyRequestMap;
+    MultiValueMap<String, String> readyDTOMap = new LinkedMultiValueMap<>();
+    readyDTOMap.add("cid", CID);
+    readyDTOMap.add("partner_order_id", orderId);
+    readyDTOMap.add("partner_user_id", memberId.toString());
+    readyDTOMap.add("item_name", PaymentType.POINT.name());
+    readyDTOMap.add("quantity", "1");
+    readyDTOMap.add("total_amount", request.getTotalAmount().toString());
+    readyDTOMap.add("tax_free_amount", "0");
+    readyDTOMap.add("approval_url", APPROVAL_URL + "/" + orderId);
+    readyDTOMap.add("cancel_url", CANCEL_URL);
+    readyDTOMap.add("fail_url", FAIL_URL);
+    return readyDTOMap;
   }
 }

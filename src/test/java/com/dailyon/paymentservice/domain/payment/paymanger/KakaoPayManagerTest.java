@@ -33,15 +33,16 @@ class KakaoPayManagerTest {
   void pointPaymentReady() {
     // given
     KakaopayReadyDTO response =
-        new KakaopayReadyDTO(
-            "tid",
-            true,
-            "nextRedirectPcUrl",
-            "nextRedirectMobilUrl",
-            "nextRedirectAppUrl",
-            "androidAppScheme",
-            "iosAppScheme",
-            "createdAt");
+        KakaopayReadyDTO.builder()
+            .tid("tid")
+            .tmsResult(true)
+            .nextRedirectPcUrl("nextRedirectPcUrl")
+            .nextRedirectMobileUrl("nextRedirectMobileUrl")
+            .nextRedirectAppUrl("nextRedirectAppUrl")
+            .androidAppScheme("androidAppScheme")
+            .iosAppScheme("iosAppScheme")
+            .createdAt("createdAt")
+            .build();
     given(kakaopayFeignClient.ready(anyString(), any())).willReturn(response);
     PaymentReadyRequest.PointPaymentReadyRequest pointPaymentReadyRequest =
         new PaymentReadyRequest.PointPaymentReadyRequest(PaymentMethod.KAKAOPAY, 10000);
