@@ -51,12 +51,12 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andExpect(jsonPath("$.validation.method").value("결제 수단은 필수 입니다."));
   }
 
-  @DisplayName("카카오 페이 결제 준비 시 결제 수단은 필수 값이다.")
+  @DisplayName("카카오 페이 결제 준비 시 결제 금액은 필수 값이다.")
   @Test
   void pointPaymentReadyByNullAmount() throws Exception {
     // given
     PointPaymentRequest.PointPaymentReadyRequest request =
-        new PointPaymentRequest.PointPaymentReadyRequest(null, 250000);
+        new PointPaymentRequest.PointPaymentReadyRequest(KAKAOPAY, null);
 
     // when // then
     mockMvc
@@ -67,7 +67,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-        .andExpect(jsonPath("$.validation.method").value("결제 수단은 필수 입니다."));
+        .andExpect(jsonPath("$.validation.totalAmount").value("결제 금액은 필수 입니다."));
   }
 
   @DisplayName("카카오페이 결제로 포인트 결제한다.")
