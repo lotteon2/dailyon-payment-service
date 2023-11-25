@@ -25,11 +25,11 @@ public class Payment extends BaseEntity {
 
   @NotNull private PaymentType type;
 
-  @NotNull private PaymentStatus status = PaymentStatus.READY;
+  @NotNull private PaymentStatus status;
 
   @NotNull private PaymentMethod method;
 
-  @NotNull private Long totalAmount;
+  @NotNull private Integer totalAmount;
 
   @OneToOne(mappedBy = "payment")
   private OrderPaymentInfo orderPaymentInfo;
@@ -38,9 +38,15 @@ public class Payment extends BaseEntity {
   private List<KakaopayInfo> kakaopayInfos;
 
   @Builder
-  private Payment(Long memberId, PaymentType type, PaymentMethod method, Long totalAmount) {
+  private Payment(
+      Long memberId,
+      PaymentType type,
+      PaymentStatus status,
+      PaymentMethod method,
+      Integer totalAmount) {
     this.memberId = memberId;
     this.type = type;
+    this.status = status;
     this.method = method;
     this.totalAmount = totalAmount;
   }
