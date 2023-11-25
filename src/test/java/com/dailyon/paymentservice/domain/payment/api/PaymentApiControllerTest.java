@@ -69,4 +69,62 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.method").value("결제 수단은 필수 입니다."));
   }
+
+  @DisplayName("카카오페이 결제로 포인트 결제한다.")
+  @Test
+  void pointPaymentApprove() throws Exception {
+    // given
+    PointPaymentRequest.PointPaymentApproveRequest request =
+        new PointPaymentRequest.PointPaymentApproveRequest("orderId", "pgToken");
+
+    // when // then
+    mockMvc
+        .perform(
+            post("/payments/point-payments/approve")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andDo(print())
+        .andExpect(status().isCreated());
+  }
+
+  @DisplayName("카카오 페이 결제 승인 요청 시 주문 번호는 필수 값이다.")
+  @Test
+  void pointPaymentApproveWithNoExistOrderId() throws Exception {
+    // given
+    String noExistOrderId = null;
+    PointPaymentRequest.PointPaymentApproveRequest request =
+        new PointPaymentRequest.PointPaymentApproveRequest(noExistOrderId, "pgToken");
+
+    // when // then
+    mockMvc
+        .perform(
+            post("/payments/point-payments/approve")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+        .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
+  }
+
+  @DisplayName("카카오 페이 결제 승인 요청 시 pgToken은 필수 값이다.")
+  @Test
+  void pointPaymentApproveWithNullPgToken() throws Exception {
+    // given
+    String orderId = "orderId";
+    String noExistPgToken = null;
+    PointPaymentRequest.PointPaymentApproveRequest request =
+        new PointPaymentRequest.PointPaymentApproveRequest(orderId, noExistPgToken);
+
+    // when // then
+    mockMvc
+        .perform(
+            post("/payments/point-payments/approve")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+        .andExpect(jsonPath("$.validation.pgToken").value("pgToken은 필수 입니다."));
+  }
 }
