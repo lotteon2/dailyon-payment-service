@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(indexes = @Index(name = "idx_type", columnList = "type"))
 public class Payment extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +24,17 @@ public class Payment extends BaseEntity {
 
   @NotNull private Long memberId;
 
-  @NotNull private PaymentType type;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private PaymentType type;
 
-  @NotNull private PaymentStatus status;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private PaymentStatus status;
 
-  @NotNull private PaymentMethod method;
+  @Enumerated(EnumType.STRING)
+  @NotNull
+  private PaymentMethod method;
 
   @NotNull private Integer totalAmount;
 
