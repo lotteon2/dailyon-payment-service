@@ -42,7 +42,7 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
   }
 
   @Override
-  public Optional<Payment> findOrderPaymentByOrderIdFetch(String orderId) {
+  public Optional<Payment> findByOrderIdFetch(String orderId) {
     return Optional.ofNullable(
         queryFactory
             .selectFrom(payment)

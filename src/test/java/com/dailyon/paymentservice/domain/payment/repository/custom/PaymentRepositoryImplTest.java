@@ -60,7 +60,7 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
     em.flush();
     em.clear();
     // when
-    Payment getPayment = paymentRepository.findOrderPaymentByOrderIdFetch(orderId).get();
+    Payment getPayment = paymentRepository.findByOrderIdFetch(orderId).get();
     // then
     assertThat(getPayment.getOrderPaymentInfo())
         .isNotNull()
