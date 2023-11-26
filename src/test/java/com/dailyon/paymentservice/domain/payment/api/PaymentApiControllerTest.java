@@ -148,4 +148,17 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andDo(print())
         .andExpect(status().isOk());
   }
+
+  @DisplayName("주문 결제 내역을 조회 한다.")
+  @Test
+  void getOrderPayment() throws Exception {
+    // given
+    Long memberId = 1L;
+    String orderId = "orderId";
+    // when // then
+    mockMvc
+        .perform(get("/payments/orders/{orderId}", orderId).header("memberId", memberId))
+        .andDo(print())
+        .andExpect(status().isOk());
+  }
 }
