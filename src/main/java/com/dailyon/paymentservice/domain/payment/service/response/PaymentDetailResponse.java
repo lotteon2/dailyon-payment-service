@@ -25,7 +25,7 @@ public class PaymentDetailResponse {
     this.createdAt = createdAt;
   }
 
-  public static PaymentDetailResponse of(Payment payment) {
+  public static PaymentDetailResponse from(Payment payment) {
     return PaymentDetailResponse.builder()
         .method(payment.getMethod())
         .status(payment.getStatus())
