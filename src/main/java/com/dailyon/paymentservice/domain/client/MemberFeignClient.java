@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "member-service", configuration = MemberFeignConfig.class) // 임시 url
 public interface MemberFeignClient {
 
-  @PostMapping
+  @PostMapping("/clients/members/points/add")
   ResponseEntity pointCharge(
       @RequestHeader(value = "memberId") Long memberId, @RequestBody MemberPointUpdateDTO request);
 }
