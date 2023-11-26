@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -126,5 +127,25 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.pgToken").value("pgToken은 필수 입니다."));
+  }
+
+  @DisplayName("포인트 결제 내역을 조회 한다.")
+  @Test
+  void getPointPayments() throws Exception {
+    // given
+    Long memberId = 1L;
+    String paymentId = null;
+    String type = "POINT";
+    String page = "0";
+    // when // then
+    mockMvc
+        .perform(
+            get("/payments")
+                .header("memberId", 1L)
+                .param("paymentId", paymentId)
+                .param("type", type)
+                .param("page", page))
+        .andDo(print())
+        .andExpect(status().isOk());
   }
 }

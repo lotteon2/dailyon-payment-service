@@ -5,11 +5,14 @@ import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
 import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
 import com.dailyon.paymentservice.domain.payment.dto.MemberPointUpdateDTO;
+import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
+import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +38,8 @@ public class PaymentFacade {
   @Transactional
   public Long pointPaymentApprove(
       Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
-
     KakaopayApproveDTO approveDTO = kakaoPayManager.approve(memberId, request);
     CreatePaymentServiceRequest serviceRequest = approveDTO.toServiceRequest(POINT, KAKAOPAY);
-
     Long paymentId = paymentService.createPayment(serviceRequest, approveDTO.getTid());
 
     MemberPointUpdateDTO memberPointUpdateDTO =
@@ -49,5 +50,10 @@ public class PaymentFacade {
     // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
     memberFeignClient.pointCharge(memberId, memberPointUpdateDTO);
     return paymentId;
+  }
+
+  public PaymentPageResponse getPayments(
+      Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
+    return paymentService.getPayments(pageable, memberId, paymentId, type);
   }
 }
