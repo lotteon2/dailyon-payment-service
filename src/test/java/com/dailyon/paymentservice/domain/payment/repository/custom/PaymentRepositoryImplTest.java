@@ -24,6 +24,7 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 class PaymentRepositoryImplTest extends IntegrationTestSupport {
   @Autowired PaymentRepository paymentRepository;
   @Autowired KakaopayInfoRepository kakaopayInfoRepository;
@@ -46,7 +47,6 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
     assertThat(payments.hasNext()).isTrue();
   }
 
-  @Transactional
   @DisplayName("주문 번호로 주문 결제 정보를 조회한다.")
   @Test
   void getOrderPaymentInfo() {

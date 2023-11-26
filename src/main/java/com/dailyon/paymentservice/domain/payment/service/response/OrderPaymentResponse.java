@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderPaymentResponse {
 
-  private Integer totalCouponDiscountPrice;
-  private Integer deliveryFee;
-  private Integer usedPoints;
+  private int totalCouponDiscountPrice;
+  private int deliveryFee;
+  private int usedPoints;
   private PaymentStatus status;
   private PaymentMethod method;
   private Integer totalAmount;
