@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Table(indexes = @Index(name = "idx_order_id", columnList = "orderId"))
 public class OrderPaymentInfo {
   @Id private Long paymentId;
 

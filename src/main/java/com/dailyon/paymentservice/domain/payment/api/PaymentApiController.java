@@ -3,6 +3,7 @@ package com.dailyon.paymentservice.domain.payment.api;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
+import com.dailyon.paymentservice.domain.payment.service.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -42,5 +43,12 @@ public class PaymentApiController {
       @RequestParam(name = "paymentId", required = false) Long paymentId,
       @RequestParam(name = "type", required = false) PaymentType type) {
     return ResponseEntity.ok(paymentFacade.getPayments(pageable, memberId, paymentId, type));
+  }
+
+  @GetMapping("/orders/{orderId}")
+  public ResponseEntity<OrderPaymentResponse> getOrderPayment(
+      @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
+      @PathVariable(name = "orderId") String orderId) {
+    return ResponseEntity.ok(paymentFacade.getOrderPayment(orderId, memberId));
   }
 }

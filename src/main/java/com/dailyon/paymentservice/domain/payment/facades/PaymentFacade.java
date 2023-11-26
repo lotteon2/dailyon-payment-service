@@ -9,6 +9,7 @@ import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
+import com.dailyon.paymentservice.domain.payment.service.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +56,9 @@ public class PaymentFacade {
   public PaymentPageResponse getPayments(
       Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
     return paymentService.getPayments(pageable, memberId, paymentId, type);
+  }
+
+  public OrderPaymentResponse getOrderPayment(String orderId, Long memberId) {
+    return paymentService.getOrderPayment(orderId, memberId);
   }
 }
