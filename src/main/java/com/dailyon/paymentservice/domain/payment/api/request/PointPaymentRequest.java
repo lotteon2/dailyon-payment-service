@@ -1,7 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.api.request;
 
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
-import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
