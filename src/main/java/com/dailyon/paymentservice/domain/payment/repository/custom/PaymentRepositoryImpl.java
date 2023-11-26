@@ -24,7 +24,7 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
     List<Payment> fetch =
         queryFactory
             .selectFrom(payment)
-            .where(payment.memberId.eq(memberId), ltPaymentId(paymentId), getType(type))
+            .where(payment.memberId.eq(memberId), ltPaymentId(paymentId), eqType(type))
             .limit(pageable.getPageSize() + 1)
             .orderBy(payment.id.desc())
             .fetch();
@@ -43,7 +43,7 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
     return paymentId == null ? null : payment.id.lt(paymentId);
   }
 
-  private BooleanExpression getType(PaymentType type) {
+  private BooleanExpression eqType(PaymentType type) {
     return type == null ? null : payment.type.eq(type);
   }
 }
