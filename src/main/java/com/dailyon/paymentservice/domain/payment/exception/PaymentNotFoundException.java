@@ -5,10 +5,10 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class OrderPaymentNotFoundException extends CustomException {
-  private static final String MESSAGE = "주문 결제 정보가 존재하지 않습니다.";
+public class PaymentNotFoundException extends CustomException {
+  private static final String MESSAGE = "결제 정보가 존재하지 않습니다.";
 
-  public OrderPaymentNotFoundException() {
+  public PaymentNotFoundException() {
     super(MESSAGE);
   }
 

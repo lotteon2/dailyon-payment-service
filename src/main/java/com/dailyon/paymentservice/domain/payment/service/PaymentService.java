@@ -5,6 +5,7 @@ import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentAppender;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
+import com.dailyon.paymentservice.domain.payment.service.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +31,10 @@ public class PaymentService {
       Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
     Slice<Payment> slice = paymentReader.read(pageable, memberId, paymentId, type);
     return PaymentPageResponse.from(slice);
+  }
+
+  public OrderPaymentResponse getOrderPayment(String orderId, Long memberId) {
+    Payment payment = paymentReader.read(orderId, memberId);
+    return OrderPaymentResponse.from(payment);
   }
 }
