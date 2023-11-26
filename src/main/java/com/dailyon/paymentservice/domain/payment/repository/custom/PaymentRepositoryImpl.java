@@ -10,7 +10,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
+import static com.dailyon.paymentservice.domain.payment.entity.QOrderPaymentInfo.orderPaymentInfo;
 import static com.dailyon.paymentservice.domain.payment.entity.QPayment.payment;
 
 @RequiredArgsConstructor
@@ -37,6 +39,17 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
     }
 
     return new SliceImpl<>(fetch, pageable, hasNext);
+  }
+
+  @Override
+  public Optional<Payment> findOrderPaymentByOrderIdFetch(String orderId) {
+    return Optional.ofNullable(
+        queryFactory
+            .selectFrom(payment)
+            .join(payment.orderPaymentInfo, orderPaymentInfo)
+            .fetchJoin()
+            .where(payment.orderPaymentInfo.orderId.eq(orderId))
+            .fetchOne());
   }
 
   private BooleanExpression ltPaymentId(Long paymentId) {

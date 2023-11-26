@@ -38,10 +38,10 @@ public class Payment extends BaseEntity {
 
   @NotNull private Integer totalAmount;
 
-  @OneToOne(mappedBy = "payment")
+  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
   private OrderPaymentInfo orderPaymentInfo;
 
-  @OneToMany(mappedBy = "payment")
+  @OneToMany(mappedBy = "payment", fetch = FetchType.LAZY)
   private List<KakaopayInfo> kakaopayInfos;
 
   @Builder
