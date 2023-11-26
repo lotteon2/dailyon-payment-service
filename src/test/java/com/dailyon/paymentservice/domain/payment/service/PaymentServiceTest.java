@@ -5,6 +5,8 @@ import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.exception.AuthorizationException;
+import com.dailyon.paymentservice.domain.payment.exception.PaymentNotFoundException;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.OrderPaymentInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
@@ -12,7 +14,6 @@ import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentSe
 import com.dailyon.paymentservice.domain.payment.service.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentStat
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.ORDER;
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class PaymentServiceTest extends IntegrationTestSupport {
@@ -98,6 +100,40 @@ class PaymentServiceTest extends IntegrationTestSupport {
         .containsExactly(
             response.getDeliveryFee(), response.getMethod(), response.getTotalAmount());
   }
+
+  @DisplayName("조회 하려는 결제 내역의 주문이 존재 하지 않는 경우 예외가 발생한다.")
+  @Test
+  void getOrderPaymentWithNoExistOrderId() {
+    // given
+    Long memberId = 1L;
+    String NoExistOrderId = "orderId";
+    // when // then
+    assertThatThrownBy(() -> paymentService.getOrderPayment(NoExistOrderId, memberId))
+        .isInstanceOf(PaymentNotFoundException.class)
+        .hasMessage("결제 정보가 존재하지 않습니다.");
+  }
+
+  @DisplayName("다른 유저의 주문 결제 내역을 조회하려고 할 시 예외가 발생한다.")
+  @Test
+  void getOrderPaymentNoAuth() {
+    // given
+    Long memberId = 1L;
+    PaymentMethod method = KAKAOPAY;
+    PaymentType type = ORDER;
+    String orderId = OrderNoGenerator.generate(memberId);
+    Payment payment = createPayment(memberId, method, type, 65000);
+    paymentRepository.save(payment);
+    OrderPaymentInfo orderPaymentInfo = createOrderPaymentInfo(payment, orderId);
+    orderPaymentInfoRepository.save(orderPaymentInfo);
+    entityManager.flush();
+    entityManager.clear();
+    Long otherMemberId = 2L;
+    // when // then
+    assertThatThrownBy(() -> paymentService.getOrderPayment(orderId, otherMemberId))
+            .isInstanceOf(AuthorizationException.class)
+            .hasMessage("권한이 없습니다.");
+  }
+
 
   private Payment createPayment(
       Long memberId, PaymentMethod method, PaymentType type, Integer totalAmount) {

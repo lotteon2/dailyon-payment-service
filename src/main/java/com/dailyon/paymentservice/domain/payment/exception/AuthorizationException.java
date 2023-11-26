@@ -8,6 +8,10 @@ import org.springframework.http.HttpStatus;
 public class AuthorizationException extends CustomException {
   private static final String MESSAGE = "권한이 없습니다.";
 
+  public AuthorizationException() {
+    super(MESSAGE);
+  }
+
   @Override
   public HttpStatus getStatusCode() {
     return HttpStatus.FORBIDDEN;
