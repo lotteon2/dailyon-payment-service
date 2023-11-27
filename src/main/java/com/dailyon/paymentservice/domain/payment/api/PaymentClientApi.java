@@ -1,0 +1,22 @@
+package com.dailyon.paymentservice.domain.payment.api;
+
+import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
+import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/clients/payments")
+public class PaymentClientApi {
+  private final PaymentFacade paymentFacade;
+
+  @PostMapping("/cancel")
+  public ResponseEntity<Void> cancelOrderPayment(
+      @RequestHeader(name = "memberId") Long memberId,
+      @RequestBody OrderPaymentRequest.OrderPaymentCancelRequest request) {
+    paymentFacade.cancel(memberId, request);
+    return ResponseEntity.ok().build();
+  }
+}
