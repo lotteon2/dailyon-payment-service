@@ -1,9 +1,9 @@
 package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
@@ -55,16 +55,13 @@ public class KakaoPayManager {
             .orElseThrow(ExpiredPaymentTimeException::new)
             .getTid();
     MultiValueMap data = toPointPaymentApproveDTO(memberId, tid, request);
-    KakaopayDTO.ApproveDTO responseDTO =
-        client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    KakaopayDTO.ApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
 
-  public KakaopayDTO.CancelDTO kakaopayCancel(
-      OrderPaymentRequest.OrderPaymentCancelRequest request) {
+  public KakaopayDTO.CancelDTO cancel(OrderPaymentRequest.OrderPaymentCancelRequest request) {
     MultiValueMap data = toPaymentCancelDTO(request);
-    KakaopayDTO.CancelDTO responseDTO =
-        client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
 

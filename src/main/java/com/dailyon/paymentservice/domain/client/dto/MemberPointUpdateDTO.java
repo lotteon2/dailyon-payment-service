@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.domain.payment.dto;
+package com.dailyon.paymentservice.domain.client.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,9 +1,10 @@
 package com.dailyon.paymentservice.domain.payment.facades;
 
 import com.dailyon.paymentservice.domain.client.MemberFeignClient;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
+import com.dailyon.paymentservice.domain.client.dto.MemberPointUpdateDTO;
+import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
-import com.dailyon.paymentservice.domain.payment.dto.MemberPointUpdateDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
@@ -59,5 +60,9 @@ public class PaymentFacade {
 
   public OrderPaymentResponse getOrderPayment(String orderId, Long memberId) {
     return paymentService.getOrderPayment(orderId, memberId);
+  }
+
+  public void cancel(Long memberId, OrderPaymentRequest.OrderPaymentCancelRequest request) {
+    kakaoPayManager.cancel(request);
   }
 }

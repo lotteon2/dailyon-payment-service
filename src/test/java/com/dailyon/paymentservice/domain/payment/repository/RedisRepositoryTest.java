@@ -1,7 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.repository;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

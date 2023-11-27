@@ -2,7 +2,7 @@ package com.dailyon.paymentservice.domain.payment.facades;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;

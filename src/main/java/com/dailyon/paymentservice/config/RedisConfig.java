@@ -1,6 +1,6 @@
 package com.dailyon.paymentservice.config;
 
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

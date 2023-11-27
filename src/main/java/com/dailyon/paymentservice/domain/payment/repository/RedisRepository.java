@@ -1,6 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.repository;
 
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;

@@ -1,14 +1,14 @@
-package com.dailyon.paymentservice.config;
+package com.dailyon.paymentservice.config.feign;
 
 import feign.Logger;
 import feign.RequestInterceptor;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 
-public class MemberFeignConfig {
+public class KakaopayFeignConfig {
   @Bean
   public RequestInterceptor requestInterceptor() {
-    return template -> template.header("Content-Type", "application/json");
+    return template -> template.header("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
   }
 
   @Bean
