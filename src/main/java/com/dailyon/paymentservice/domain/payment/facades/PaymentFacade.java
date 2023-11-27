@@ -2,8 +2,7 @@ package com.dailyon.paymentservice.domain.payment.facades;
 
 import com.dailyon.paymentservice.domain.client.MemberFeignClient;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.dto.MemberPointUpdateDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
@@ -31,7 +30,7 @@ public class PaymentFacade {
   public String pointPaymentReady(
       Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
     String orderId = OrderNoGenerator.generate(memberId);
-    KakaopayReadyDTO readyResponse = kakaoPayManager.ready(memberId, orderId, request);
+    KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(memberId, orderId, request);
     return readyResponse.getNextRedirectAppUrl();
   }
 
@@ -39,7 +38,7 @@ public class PaymentFacade {
   @Transactional
   public Long pointPaymentApprove(
       Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
-    KakaopayApproveDTO approveDTO = kakaoPayManager.approve(memberId, request);
+    KakaopayDTO.ApproveDTO approveDTO = kakaoPayManager.approve(memberId, request);
     CreatePaymentServiceRequest serviceRequest = approveDTO.toServiceRequest(POINT, KAKAOPAY);
     Long paymentId = paymentService.createPayment(serviceRequest, approveDTO.getTid());
 

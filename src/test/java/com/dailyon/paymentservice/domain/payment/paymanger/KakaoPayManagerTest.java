@@ -2,8 +2,7 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
@@ -38,8 +37,8 @@ class KakaoPayManagerTest {
   @Test
   void pointPaymentReady() {
     // given
-    KakaopayReadyDTO response =
-        KakaopayReadyDTO.builder()
+    KakaopayDTO.ReadyDTO response =
+        KakaopayDTO.ReadyDTO.builder()
             .tid("tid")
             .tmsResult(true)
             .nextRedirectPcUrl("nextRedirectPcUrl")
@@ -53,7 +52,8 @@ class KakaoPayManagerTest {
     PointPaymentRequest.PointPaymentReadyRequest pointPaymentReadyRequest =
         new PointPaymentRequest.PointPaymentReadyRequest(PaymentMethod.KAKAOPAY, 10000);
     // when
-    KakaopayReadyDTO result = kakaoPayManager.ready(1L, "orderId", pointPaymentReadyRequest);
+    KakaopayDTO.ReadyDTO result =
+        kakaoPayManager.ready(1L, "orderId", pointPaymentReadyRequest);
     // then
     assertThat(result).isNotNull();
     verify(redisRepository, times(1)).saveReadyInfo("orderId", result);
@@ -64,8 +64,8 @@ class KakaoPayManagerTest {
   void pointPaymentApprove() {
     // given
 
-    KakaopayReadyDTO readyDTO =
-        KakaopayReadyDTO.builder()
+    KakaopayDTO.ReadyDTO readyDTO =
+        KakaopayDTO.ReadyDTO.builder()
             .tid("tid")
             .tmsResult(true)
             .nextRedirectPcUrl("nextRedirectPcUrl")
@@ -79,10 +79,10 @@ class KakaoPayManagerTest {
     String orderId = OrderNoGenerator.generate(1L);
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
-    KakaopayApproveDTO.Amount amount = KakaopayApproveDTO.Amount.builder().total(250000).build();
+    KakaopayDTO.Amount amount = KakaopayDTO.Amount.builder().total(250000).build();
 
-    KakaopayApproveDTO approveDTO =
-        KakaopayApproveDTO.builder()
+    KakaopayDTO.ApproveDTO approveDTO =
+        KakaopayDTO.ApproveDTO.builder()
             .aid("testAid")
             .cid("cid")
             .tid("tid")
@@ -101,7 +101,7 @@ class KakaoPayManagerTest {
     PointPaymentRequest.PointPaymentApproveRequest request =
         new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
     // when
-    KakaopayApproveDTO result = kakaoPayManager.approve(1L, request);
+    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(1L, request);
     // then
     assertThat(result).isNotNull();
     verify(kakaopayFeignClient, times(1)).approve(anyString(), any());

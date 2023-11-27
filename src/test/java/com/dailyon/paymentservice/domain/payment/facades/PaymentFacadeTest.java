@@ -2,8 +2,7 @@ package com.dailyon.paymentservice.domain.payment.facades;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
-import com.dailyon.paymentservice.domain.payment.entity.KakaopayInfo;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
@@ -44,9 +43,9 @@ class PaymentFacadeTest extends IntegrationTestSupport {
         new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
-    KakaopayApproveDTO.Amount amount = KakaopayApproveDTO.Amount.builder().total(250000).build();
-    KakaopayApproveDTO approveDTO =
-        KakaopayApproveDTO.builder()
+    KakaopayDTO.Amount amount = KakaopayDTO.Amount.builder().total(250000).build();
+    KakaopayDTO.ApproveDTO approveDTO =
+        KakaopayDTO.ApproveDTO.builder()
             .aid("testAid")
             .cid("cid")
             .tid("tid")

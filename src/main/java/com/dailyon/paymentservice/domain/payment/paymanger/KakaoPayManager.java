@@ -1,9 +1,9 @@
 package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
+import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayApproveDTO;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.payment.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
@@ -38,16 +38,16 @@ public class KakaoPayManager {
   private String CANCEL_URL;
 
   // TODO : 나중 리팩토링 예정
-  public KakaopayReadyDTO ready(
+  public KakaopayDTO.ReadyDTO ready(
       Long memberId, String orderId, PointPaymentRequest.PointPaymentReadyRequest request) {
     MultiValueMap data = toPointPaymentReadyDTO(orderId, memberId, request);
-    KakaopayReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    KakaopayDTO.ReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     redisRepository.saveReadyInfo(orderId, responseDTO);
     return responseDTO;
   }
 
   // TODO : 나중 리팩토링 예정
-  public KakaopayApproveDTO approve(
+  public KakaopayDTO.ApproveDTO approve(
       Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
     String tid =
         redisRepository
@@ -55,8 +55,26 @@ public class KakaoPayManager {
             .orElseThrow(ExpiredPaymentTimeException::new)
             .getTid();
     MultiValueMap data = toPointPaymentApproveDTO(memberId, tid, request);
-    KakaopayApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    KakaopayDTO.ApproveDTO responseDTO =
+        client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
+  }
+
+  public KakaopayDTO.CancelDTO kakaopayCancel(
+      OrderPaymentRequest.OrderPaymentCancelRequest request) {
+    MultiValueMap data = toPaymentCancelDTO(request);
+    KakaopayDTO.CancelDTO responseDTO =
+        client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    return responseDTO;
+  }
+
+  private MultiValueMap toPaymentCancelDTO(OrderPaymentRequest.OrderPaymentCancelRequest request) {
+    MultiValueMap<String, String> cancelDTO = new LinkedMultiValueMap<>();
+    cancelDTO.add("cid", CID);
+    cancelDTO.add("tid", request.getTid());
+    cancelDTO.add("cancel_amount", request.getCancelAmount().toString());
+    cancelDTO.add("cancel_tax_free_amount", "0");
+    return cancelDTO;
   }
 
   // TODO : 클래스로 빼서 관리할예정
