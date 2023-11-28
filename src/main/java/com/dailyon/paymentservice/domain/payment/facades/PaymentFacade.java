@@ -7,11 +7,11 @@ import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
+import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
-import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
-import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -66,13 +66,12 @@ public class PaymentFacade {
     return OrderPaymentResponse.from(orderPayment);
   }
 
-  @Transactional
-  public void cancel(Long memberId, OrderPaymentRequest.OrderPaymentCancelRequest request) {
+  public KakaopayDTO.CancelDTO cancel(
+      Long memberId, OrderPaymentRequest.OrderPaymentCancelRequest request) {
     Payment orderPayment = paymentService.getOrderPayment(request.getOrderId(), memberId);
-
-    kakaoPayManager.cancel(
-        orderPayment.getOrderPaymentInfo().getOrderId(), request.getCancelAmount(), memberId);
-
-    // 카프카 던짐
+    KakaopayDTO.CancelDTO cancel =
+        kakaoPayManager.cancel(
+            orderPayment.getOrderPaymentInfo().getOrderId(), request.getCancelAmount(), memberId);
+    return cancel;
   }
 }

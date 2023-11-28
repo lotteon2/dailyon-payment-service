@@ -91,6 +91,7 @@ public class KakaopayDTO {
   @Getter
   @NoArgsConstructor
   @AllArgsConstructor
+  @Builder
   public static class CancelDTO {
     private String aid;
     private String tid;

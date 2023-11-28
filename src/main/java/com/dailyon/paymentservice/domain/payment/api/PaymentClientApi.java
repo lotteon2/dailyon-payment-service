@@ -1,5 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.api;
 
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ public class PaymentClientApi {
   private final PaymentFacade paymentFacade;
 
   @PostMapping("/cancel")
-  public ResponseEntity<Void> cancelOrderPayment(
+  public ResponseEntity<KakaopayDTO.CancelDTO> cancelOrderPayment(
       @RequestHeader(name = "memberId") Long memberId,
       @RequestBody OrderPaymentRequest.OrderPaymentCancelRequest request) {
     paymentFacade.cancel(memberId, request);
