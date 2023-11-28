@@ -1,6 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.service;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
+import com.dailyon.paymentservice.domain.payment.entity.KakaopayInfo;
 import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
@@ -11,14 +12,13 @@ import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoReposito
 import com.dailyon.paymentservice.domain.payment.repository.OrderPaymentInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
-import com.dailyon.paymentservice.domain.payment.service.response.OrderPaymentResponse;
-import com.dailyon.paymentservice.domain.payment.service.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -70,11 +70,11 @@ class PaymentServiceTest extends IntegrationTestSupport {
     }
     Pageable page = PageRequest.of(0, 8);
     // when
-    PaymentPageResponse payments = paymentService.getPayments(page, memberId, paymentId, type);
+    Slice<Payment> payments = paymentService.getPayments(page, memberId, paymentId, type);
     // then
     assertThat(payments).isNotNull();
-    assertThat(payments.getPayments()).isNotEmpty().hasSize(8);
-    assertThat(payments.isHasNext()).isTrue();
+    assertThat(payments.getContent()).isNotEmpty().hasSize(8);
+    assertThat(payments.hasNext()).isTrue();
   }
 
   @DisplayName("주문 번호로 해당 주문의 결제 내역을 조회한다.")
@@ -86,19 +86,24 @@ class PaymentServiceTest extends IntegrationTestSupport {
     PaymentType type = ORDER;
     String orderId = OrderNoGenerator.generate(memberId);
     Payment payment = createPayment(memberId, method, type, 65000);
+    KakaopayInfo kakaopayInfo = createKakaoPayInfo(payment, "tid");
     paymentRepository.save(payment);
+    kakaopayInfoRepository.save(kakaopayInfo);
     OrderPaymentInfo orderPaymentInfo = createOrderPaymentInfo(payment, orderId);
     orderPaymentInfoRepository.save(orderPaymentInfo);
     entityManager.flush();
     entityManager.clear();
     // when
-    OrderPaymentResponse response = paymentService.getOrderPayment(orderId, memberId);
+    Payment orderPayment = paymentService.getOrderPayment(orderId, memberId);
+    OrderPaymentInfo getOrderPaymentInfo = orderPayment.getOrderPaymentInfo();
     // then
-    assertThat(response).isNotNull();
-    assertThat(response)
-        .extracting("deliveryFee", "method", "totalAmount")
+    assertThat(getOrderPaymentInfo).isNotNull();
+    assertThat(orderPayment)
+        .extracting("orderPaymentInfo.deliveryFee", "method", "totalAmount")
         .containsExactly(
-            response.getDeliveryFee(), response.getMethod(), response.getTotalAmount());
+            orderPaymentInfo.getDeliveryFee(),
+            orderPayment.getMethod(),
+            orderPayment.getTotalAmount());
   }
 
   @DisplayName("조회 하려는 결제 내역의 주문이 존재 하지 않는 경우 예외가 발생한다.")
@@ -122,7 +127,9 @@ class PaymentServiceTest extends IntegrationTestSupport {
     PaymentType type = ORDER;
     String orderId = OrderNoGenerator.generate(memberId);
     Payment payment = createPayment(memberId, method, type, 65000);
+    KakaopayInfo kakaopayInfo = createKakaoPayInfo(payment, "tid");
     paymentRepository.save(payment);
+    kakaopayInfoRepository.save(kakaopayInfo);
     OrderPaymentInfo orderPaymentInfo = createOrderPaymentInfo(payment, orderId);
     orderPaymentInfoRepository.save(orderPaymentInfo);
     entityManager.flush();
@@ -130,10 +137,13 @@ class PaymentServiceTest extends IntegrationTestSupport {
     Long otherMemberId = 2L;
     // when // then
     assertThatThrownBy(() -> paymentService.getOrderPayment(orderId, otherMemberId))
-            .isInstanceOf(AuthorizationException.class)
-            .hasMessage("권한이 없습니다.");
+        .isInstanceOf(AuthorizationException.class)
+        .hasMessage("권한이 없습니다.");
   }
 
+  private KakaopayInfo createKakaoPayInfo(Payment payment, String tid) {
+    return KakaopayInfo.builder().tid(tid).payment(payment).build();
+  }
 
   private Payment createPayment(
       Long memberId, PaymentMethod method, PaymentType type, Integer totalAmount) {

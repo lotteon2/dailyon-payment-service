@@ -1,6 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.repository;
 
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,13 +12,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RedisRepository {
 
-  private final RedisTemplate<String, KakaopayReadyDTO> redisTemplate;
+  private final RedisTemplate<String, KakaopayDTO.ReadyDTO> redisTemplate;
 
-  public void saveReadyInfo(String key, KakaopayReadyDTO data) {
+  public void saveReadyInfo(String key, KakaopayDTO.ReadyDTO data) {
     redisTemplate.opsForValue().set(key, data, Duration.ofMinutes(5));
   }
 
-  public Optional<KakaopayReadyDTO> findByOrderId(String key) {
+  public Optional<KakaopayDTO.ReadyDTO> findByOrderId(String key) {
     return Optional.ofNullable(redisTemplate.opsForValue().get(key));
   }
 }

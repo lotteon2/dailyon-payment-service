@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class KakaopayInfo {
   @Id private String tid;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "payment_id")
   private Payment payment;
 

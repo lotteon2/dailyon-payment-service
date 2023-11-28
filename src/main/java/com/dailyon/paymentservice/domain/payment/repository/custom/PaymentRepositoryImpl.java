@@ -12,6 +12,7 @@ import org.springframework.data.domain.SliceImpl;
 import java.util.List;
 import java.util.Optional;
 
+import static com.dailyon.paymentservice.domain.payment.entity.QKakaopayInfo.kakaopayInfo;
 import static com.dailyon.paymentservice.domain.payment.entity.QOrderPaymentInfo.orderPaymentInfo;
 import static com.dailyon.paymentservice.domain.payment.entity.QPayment.payment;
 
@@ -47,6 +48,19 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
         queryFactory
             .selectFrom(payment)
             .join(payment.orderPaymentInfo, orderPaymentInfo)
+            .fetchJoin()
+            .join(payment.kakaopayInfo, kakaopayInfo)
+            .fetchJoin()
+            .where(payment.orderPaymentInfo.orderId.eq(orderId))
+            .fetchOne());
+  }
+
+  @Override
+  public Optional<Payment> findKakaoPaymentByOrderId(String orderId) {
+    return Optional.of(
+        queryFactory
+            .selectFrom(payment)
+            .join(payment.kakaopayInfo, kakaopayInfo)
             .fetchJoin()
             .where(payment.orderPaymentInfo.orderId.eq(orderId))
             .fetchOne());

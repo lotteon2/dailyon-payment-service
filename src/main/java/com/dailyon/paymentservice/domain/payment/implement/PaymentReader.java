@@ -22,13 +22,22 @@ public class PaymentReader {
   public Payment read(String orderId, Long memberId) {
     Payment payment =
         paymentRepository.findByOrderIdFetch(orderId).orElseThrow(PaymentNotFoundException::new);
-    if (!isValidAuth(payment, memberId)) {
-      throw new AuthorizationException();
-    }
+    isValidAuth(payment, memberId);
     return payment;
   }
 
-  private boolean isValidAuth(Payment payment, Long memberId) {
-    return payment.getMemberId() == memberId;
+  public Payment readKakao(String orderId, Long memberId) {
+    Payment payment =
+        paymentRepository
+            .findKakaoPaymentByOrderId(orderId)
+            .orElseThrow(PaymentNotFoundException::new);
+    isValidAuth(payment, memberId);
+    return payment;
+  }
+
+  private void isValidAuth(Payment payment, Long memberId) {
+    if (payment.getMemberId() != memberId) {
+      throw new AuthorizationException();
+    }
   }
 }

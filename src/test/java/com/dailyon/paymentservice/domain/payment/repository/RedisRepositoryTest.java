@@ -1,7 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.repository;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
-import com.dailyon.paymentservice.domain.payment.dto.KakaopayReadyDTO;
+import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,8 +16,8 @@ class RedisRepositoryTest extends IntegrationTestSupport {
   @Test
   void findByOrderId() {
     // given
-    KakaopayReadyDTO dto =
-        KakaopayReadyDTO.builder()
+    KakaopayDTO.ReadyDTO dto =
+        KakaopayDTO.ReadyDTO.builder()
             .tid("1")
             .nextRedirectAppUrl("testRedirectAppUrl")
             .androidAppScheme("testAnd")
@@ -30,11 +30,11 @@ class RedisRepositoryTest extends IntegrationTestSupport {
     String orderId = OrderNoGenerator.generate(1L);
     redisRepository.saveReadyInfo(orderId, dto);
     // when
-    KakaopayReadyDTO kakaopayReadyDTO = redisRepository.findByOrderId(orderId).get();
+    KakaopayDTO.ReadyDTO readyDTO = redisRepository.findByOrderId(orderId).get();
     // then
-    assertThat(kakaopayReadyDTO)
+    assertThat(readyDTO)
         .isNotNull()
         .extracting("tid", "nextRedirectPcUrl")
-        .containsExactly(kakaopayReadyDTO.getTid(), kakaopayReadyDTO.getNextRedirectPcUrl());
+        .containsExactly(readyDTO.getTid(), readyDTO.getNextRedirectPcUrl());
   }
 }
