@@ -2,10 +2,11 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
-import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
+import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
+import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 public class KakaoPayManager {
 
   private final KakaopayFeignClient client;
+  private final PaymentReader paymentReader;
   private final RedisRepository redisRepository; // TODO : DynamoDB 세팅되면 바꿈
 
   @Value("${kakaopay.cid}")
@@ -59,17 +61,18 @@ public class KakaoPayManager {
     return responseDTO;
   }
 
-  public KakaopayDTO.CancelDTO cancel(OrderPaymentRequest.OrderPaymentCancelRequest request) {
-    MultiValueMap data = toPaymentCancelDTO(request);
+  public KakaopayDTO.CancelDTO cancel(String orderId, Integer cancelAmount, Long memberId) {
+    Payment payment = paymentReader.readKakao(orderId, memberId);
+    MultiValueMap data = toPaymentCancelDTO(payment.getKakaopayInfo().getTid(), cancelAmount);
     KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
 
-  private MultiValueMap toPaymentCancelDTO(OrderPaymentRequest.OrderPaymentCancelRequest request) {
+  private MultiValueMap toPaymentCancelDTO(String tid, Integer cancelAmount) {
     MultiValueMap<String, String> cancelDTO = new LinkedMultiValueMap<>();
     cancelDTO.add("cid", CID);
-    cancelDTO.add("tid", request.getTid());
-    cancelDTO.add("cancel_amount", request.getCancelAmount().toString());
+    cancelDTO.add("tid", tid);
+    cancelDTO.add("cancel_amount", cancelAmount.toString());
     cancelDTO.add("cancel_tax_free_amount", "0");
     return cancelDTO;
   }

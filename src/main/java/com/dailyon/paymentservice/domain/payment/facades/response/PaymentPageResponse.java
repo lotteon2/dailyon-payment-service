@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.domain.payment.service.response;
+package com.dailyon.paymentservice.domain.payment.facades.response;
 
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package com.dailyon.paymentservice.domain.payment.repository.custom;
 
 import com.dailyon.paymentservice.IntegrationTestSupport;
+import com.dailyon.paymentservice.domain.payment.entity.KakaopayInfo;
 import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
@@ -54,7 +55,9 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
     Integer totalAmount = 350000;
     String orderId = OrderNoGenerator.generate(1L);
     Payment payment = createPayment(totalAmount, ORDER);
+    KakaopayInfo kakaopayInfo = createKakaoPayInfo(payment, "tid");
     paymentRepository.save(payment);
+    kakaopayInfoRepository.save(kakaopayInfo);
     OrderPaymentInfo orderPaymentInfo = createOrderPaymentInfo(payment, orderId);
     orderPaymentInfoRepository.save(orderPaymentInfo);
     em.flush();
@@ -66,6 +69,10 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
         .isNotNull()
         .extracting("orderId", "deliveryFee")
         .containsExactly(orderId, getPayment.getOrderPaymentInfo().getDeliveryFee());
+  }
+
+  private KakaopayInfo createKakaoPayInfo(Payment payment, String tid) {
+    return KakaopayInfo.builder().tid(tid).payment(payment).build();
   }
 
   private Payment createPayment(Integer totalAmount, PaymentType type) {

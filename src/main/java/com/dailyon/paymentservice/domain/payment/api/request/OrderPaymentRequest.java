@@ -13,8 +13,7 @@ public class OrderPaymentRequest {
   @AllArgsConstructor
   public static class OrderPaymentCancelRequest {
 
-    @NotNull(message = "tid는 필수 입니다.")
-    private String tid;
+    private String orderId;
 
     private Long orderDetailId;
 

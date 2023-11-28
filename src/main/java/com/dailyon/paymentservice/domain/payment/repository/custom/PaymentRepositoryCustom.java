@@ -11,4 +11,6 @@ public interface PaymentRepositoryCustom {
   Slice<Payment> findByMemberId(Pageable pageable, Long memberId, Long paymentId, PaymentType type);
 
   Optional<Payment> findByOrderIdFetch(String orderId);
+
+  Optional<Payment> findKakaoPaymentByOrderId(String orderId);
 }
