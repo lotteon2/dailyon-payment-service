@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clients/payments")
@@ -16,7 +18,7 @@ public class PaymentClientApi {
   @PostMapping("/cancel")
   public ResponseEntity<KakaopayDTO.CancelDTO> cancelOrderPayment(
       @RequestHeader(name = "memberId") Long memberId,
-      @RequestBody OrderPaymentRequest.OrderPaymentCancelRequest request) {
+      @Valid @RequestBody OrderPaymentRequest.OrderPaymentCancelRequest request) {
     paymentFacade.cancel(memberId, request);
     return ResponseEntity.ok().build();
   }
