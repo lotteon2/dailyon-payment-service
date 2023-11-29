@@ -25,7 +25,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(
-            post("/payments/point-payments/ready")
+            post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
@@ -43,7 +43,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
 
     mockMvc
         .perform(
-            post("/payments/point-payments/ready")
+            post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
@@ -62,7 +62,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(
-            post("/payments/point-payments/ready")
+            post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
@@ -81,7 +81,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(
-            post("/payments/point-payments/approve")
+            post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
@@ -99,7 +99,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(
-            post("/payments/point-payments/approve")
+            post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())
@@ -120,7 +120,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(
-            post("/payments/point-payments/approve")
+            post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andDo(print())

@@ -7,6 +7,7 @@ import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
@@ -30,10 +31,8 @@ public class PaymentFacade {
   private final KakaoPayManager kakaoPayManager;
   private final MemberFeignClient memberFeignClient;
 
-  public String pointPaymentReady(
-      Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
-    String orderId = OrderNoGenerator.generate(memberId);
-    KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(memberId, orderId, request);
+  public String paymentReady(PaymentFacadeRequest.PaymentReadyRequest request) {
+    KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(request);
     return readyResponse.getNextRedirectAppUrl();
   }
 

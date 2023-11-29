@@ -73,6 +73,7 @@ logging:
 
 kakaopay:
   cid: ${cid}
+  order_approval_url : ${order_approval_url}
   approval_url: ${approval_url}
   fail_url: ${fail_url}
   cancel_url: ${cancel_url}

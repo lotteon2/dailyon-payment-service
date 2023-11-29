@@ -5,6 +5,7 @@ import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
 import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
+import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -20,15 +21,18 @@ import javax.validation.Valid;
 public class PaymentApiController {
   private final PaymentFacade paymentFacade;
   // TODO: TEST를 위해 required false + defaultValue설정 함 나중에 바꿈
-  @PostMapping("/point-payments/ready")
+  @PostMapping("/ready")
   public ResponseEntity<String> kakaopayReady(
       @RequestHeader(value = "memberId", required = false, defaultValue = "1") Long memberId,
       @Valid @RequestBody PointPaymentRequest.PointPaymentReadyRequest request) {
-    String nextUrl = paymentFacade.pointPaymentReady(memberId, request);
+
+    String orderId = OrderNoGenerator.generate(memberId);
+    String nextUrl =
+        paymentFacade.paymentReady(request.toFacadeRequest(memberId, orderId));
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }
 
-  @PostMapping("/point-payments/approve")
+  @PostMapping("/approve")
   public ResponseEntity<Long> pointPaymentApprove(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @Valid @RequestBody PointPaymentRequest.PointPaymentApproveRequest request) {

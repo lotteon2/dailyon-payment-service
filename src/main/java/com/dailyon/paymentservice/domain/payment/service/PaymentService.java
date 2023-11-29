@@ -25,6 +25,11 @@ public class PaymentService {
     return paymentId;
   }
 
+//  @Transactional
+//  public Long createOrderPayment(CreatePayment) {
+//    return null;
+//  }
+
   public Slice<Payment> getPayments(
       Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
     Slice<Payment> slice = paymentReader.read(pageable, memberId, paymentId, type);

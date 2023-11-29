@@ -4,8 +4,8 @@ import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
-import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
+import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +40,10 @@ public class KakaoPayManager {
   private String CANCEL_URL;
 
   // TODO : 나중 리팩토링 예정
-  public KakaopayDTO.ReadyDTO ready(
-      Long memberId, String orderId, PointPaymentRequest.PointPaymentReadyRequest request) {
-    MultiValueMap data = toPointPaymentReadyDTO(orderId, memberId, request);
+  public KakaopayDTO.ReadyDTO ready(PaymentFacadeRequest.PaymentReadyRequest request) {
+    MultiValueMap data = toPointPaymentReadyDTO(request);
     KakaopayDTO.ReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
-    redisRepository.saveReadyInfo(orderId, responseDTO);
+    redisRepository.saveReadyInfo(request.getOrderId(), responseDTO);
     return responseDTO;
   }
 
@@ -78,17 +77,16 @@ public class KakaoPayManager {
   }
 
   // TODO : 클래스로 빼서 관리할예정
-  private MultiValueMap toPointPaymentReadyDTO(
-      String orderId, Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
+  private MultiValueMap toPointPaymentReadyDTO(PaymentFacadeRequest.PaymentReadyRequest request) {
     MultiValueMap<String, String> readyDTOMap = new LinkedMultiValueMap<>();
     readyDTOMap.add("cid", CID);
-    readyDTOMap.add("partner_order_id", orderId);
-    readyDTOMap.add("partner_user_id", memberId.toString());
-    readyDTOMap.add("item_name", PaymentType.POINT.getMessage());
+    readyDTOMap.add("partner_order_id", request.getOrderId());
+    readyDTOMap.add("partner_user_id", request.getMemberId().toString());
+    readyDTOMap.add("item_name", request.getProductName());
     readyDTOMap.add("quantity", "1");
     readyDTOMap.add("total_amount", request.getTotalAmount().toString());
-    readyDTOMap.add("tax_free_amount", "0");
-    readyDTOMap.add("approval_url", APPROVAL_URL + "/" + orderId);
+    readyDTOMap.add("tax_free_amount", String.valueOf(request.getQuantity()));
+    readyDTOMap.add("approval_url", APPROVAL_URL + "/" + request.getOrderId());
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
     return readyDTOMap;

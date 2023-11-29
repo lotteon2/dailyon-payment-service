@@ -53,7 +53,7 @@ class KakaoPayManagerTest {
         new PointPaymentRequest.PointPaymentReadyRequest(PaymentMethod.KAKAOPAY, 10000);
     // when
     KakaopayDTO.ReadyDTO result =
-        kakaoPayManager.ready(1L, "orderId", pointPaymentReadyRequest);
+        kakaoPayManager.ready(pointPaymentReadyRequest.toFacadeRequest(1L,"orderId"));
     // then
     assertThat(result).isNotNull();
     verify(redisRepository, times(1)).saveReadyInfo("orderId", result);
