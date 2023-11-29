@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.ORDER;
+
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -33,6 +35,9 @@ public class KakaoPayManager {
   @Value("${kakaopay.approval_url}")
   private String APPROVAL_URL;
 
+  @Value("${kakaopay.order_approval_url}")
+  private String ORDER_APPROVAL_URL;
+
   @Value("${kakaopay.fail_url}")
   private String FAIL_URL;
 
@@ -41,7 +46,7 @@ public class KakaoPayManager {
 
   // TODO : 나중 리팩토링 예정
   public KakaopayDTO.ReadyDTO ready(PaymentFacadeRequest.PaymentReadyRequest request) {
-    MultiValueMap data = toPointPaymentReadyDTO(request);
+    MultiValueMap data = toPaymentReadyDTO(request);
     KakaopayDTO.ReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     redisRepository.saveReadyInfo(request.getOrderId(), responseDTO);
     return responseDTO;
@@ -55,7 +60,7 @@ public class KakaoPayManager {
             .findByOrderId(request.getOrderId())
             .orElseThrow(ExpiredPaymentTimeException::new)
             .getTid();
-    MultiValueMap data = toPointPaymentApproveDTO(memberId, tid, request);
+    MultiValueMap data = toPaymentApproveDTO(memberId, tid, request);
     KakaopayDTO.ApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
@@ -77,22 +82,26 @@ public class KakaoPayManager {
   }
 
   // TODO : 클래스로 빼서 관리할예정
-  private MultiValueMap toPointPaymentReadyDTO(PaymentFacadeRequest.PaymentReadyRequest request) {
+  private MultiValueMap toPaymentReadyDTO(PaymentFacadeRequest.PaymentReadyRequest request) {
     MultiValueMap<String, String> readyDTOMap = new LinkedMultiValueMap<>();
     readyDTOMap.add("cid", CID);
     readyDTOMap.add("partner_order_id", request.getOrderId());
     readyDTOMap.add("partner_user_id", request.getMemberId().toString());
     readyDTOMap.add("item_name", request.getProductName());
-    readyDTOMap.add("quantity", "1");
+    readyDTOMap.add("quantity", String.valueOf(request.getQuantity()));
     readyDTOMap.add("total_amount", request.getTotalAmount().toString());
     readyDTOMap.add("tax_free_amount", String.valueOf(request.getQuantity()));
-    readyDTOMap.add("approval_url", APPROVAL_URL + "/" + request.getOrderId());
+    readyDTOMap.add(
+        "approval_url",
+        ORDER.equals(request.getType())
+            ? ORDER_APPROVAL_URL
+            : APPROVAL_URL + "/" + request.getOrderId());
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
     return readyDTOMap;
   }
 
-  private MultiValueMap toPointPaymentApproveDTO(
+  private MultiValueMap toPaymentApproveDTO(
       Long memberId, String tid, PointPaymentRequest.PointPaymentApproveRequest request) {
     MultiValueMap<String, String> approveDTOMap = new LinkedMultiValueMap<>();
     approveDTOMap.add("cid", CID);
