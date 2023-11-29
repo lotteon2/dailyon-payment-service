@@ -50,5 +50,15 @@ public class PointPaymentRequest {
 
     @NotNull(message = "pgToken은 필수 입니다.")
     private String pgToken;
+
+    public PaymentFacadeRequest.PaymentApproveRequest toFacadeRequest(
+        Long memberId, PaymentMethod method) {
+      return PaymentFacadeRequest.PaymentApproveRequest.builder()
+          .memberId(memberId)
+          .orderId(orderId)
+          .type(POINT)
+          .method(method)
+          .build();
+    }
   }
 }

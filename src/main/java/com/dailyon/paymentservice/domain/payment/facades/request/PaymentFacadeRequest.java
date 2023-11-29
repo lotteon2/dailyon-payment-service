@@ -26,4 +26,17 @@ public class PaymentFacadeRequest {
     private int totalCouponDiscountPrice;
     private int usedPoints;
   }
+
+  @Getter
+  @NoArgsConstructor
+  @AllArgsConstructor
+  @Builder
+  public static class PaymentApproveRequest {
+
+    private String orderId;
+    private String pgToken;
+    private Long memberId;
+    private PaymentType type;
+    private PaymentMethod method;
+  }
 }

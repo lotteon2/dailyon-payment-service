@@ -2,7 +2,6 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
-import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
@@ -53,14 +52,13 @@ public class KakaoPayManager {
   }
 
   // TODO : 나중 리팩토링 예정
-  public KakaopayDTO.ApproveDTO approve(
-      Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
+  public KakaopayDTO.ApproveDTO approve(PaymentFacadeRequest.PaymentApproveRequest request) {
     String tid =
         redisRepository
             .findByOrderId(request.getOrderId())
             .orElseThrow(ExpiredPaymentTimeException::new)
             .getTid();
-    MultiValueMap data = toPaymentApproveDTO(memberId, tid, request);
+    MultiValueMap data = toPaymentApproveDTO(tid, request);
     KakaopayDTO.ApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
@@ -102,12 +100,12 @@ public class KakaoPayManager {
   }
 
   private MultiValueMap toPaymentApproveDTO(
-      Long memberId, String tid, PointPaymentRequest.PointPaymentApproveRequest request) {
+      String tid, PaymentFacadeRequest.PaymentApproveRequest request) {
     MultiValueMap<String, String> approveDTOMap = new LinkedMultiValueMap<>();
     approveDTOMap.add("cid", CID);
     approveDTOMap.add("tid", tid);
     approveDTOMap.add("partner_order_id", request.getOrderId());
-    approveDTOMap.add("partner_user_id", memberId.toString());
+    approveDTOMap.add("partner_user_id", request.getMemberId().toString());
     approveDTOMap.add("pg_token", request.getPgToken());
     return approveDTOMap;
   }

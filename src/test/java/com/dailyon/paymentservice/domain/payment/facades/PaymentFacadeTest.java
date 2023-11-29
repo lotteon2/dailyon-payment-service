@@ -9,6 +9,7 @@ import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.OrderPaymentInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
@@ -54,7 +55,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     // given
     Long memberId = 1L;
     String orderId = OrderNoGenerator.generate(1L);
-    PointPaymentRequest.PointPaymentApproveRequest request =
+    PointPaymentRequest.PointPaymentApproveRequest approveRequest =
         new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
@@ -73,14 +74,16 @@ class PaymentFacadeTest extends IntegrationTestSupport {
             .quantity(1)
             .userId("1")
             .build();
-    given(kakaoPayManager.approve(memberId, request)).willReturn(approveDTO);
+
+    PaymentFacadeRequest.PaymentApproveRequest request = approveRequest.toFacadeRequest(memberId, KAKAOPAY);
+    given(kakaoPayManager.approve(request)).willReturn(approveDTO);
     given(memberFeignClient.pointCharge(any(), any())).willReturn(ResponseEntity.ok().build());
     // when
-    Long paymentId = paymentFacade.pointPaymentApprove(memberId, request);
+    Long paymentId = paymentFacade.paymentApprove(request);
     // then
     Payment getPayment = paymentRepository.findById(paymentId).get();
     assertThat(getPayment.getId()).isNotNull().isEqualTo(paymentId);
-    verify(kakaoPayManager, times(1)).approve(any(), any());
+    verify(kakaoPayManager, times(1)).approve(any());
     verify(memberFeignClient, times(1)).pointCharge(any(), any());
   }
 

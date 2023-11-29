@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.*;
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,7 +51,7 @@ class KakaoPayManagerTest {
             .build();
     given(kakaopayFeignClient.ready(anyString(), any())).willReturn(response);
     PointPaymentRequest.PointPaymentReadyRequest pointPaymentReadyRequest =
-        new PointPaymentRequest.PointPaymentReadyRequest(PaymentMethod.KAKAOPAY, 10000);
+        new PointPaymentRequest.PointPaymentReadyRequest(KAKAOPAY, 10000);
     // when
     KakaopayDTO.ReadyDTO result =
         kakaoPayManager.ready(pointPaymentReadyRequest.toFacadeRequest(1L,"orderId"));
@@ -101,7 +102,7 @@ class KakaoPayManagerTest {
     PointPaymentRequest.PointPaymentApproveRequest request =
         new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
     // when
-    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(1L, request);
+    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(request.toFacadeRequest(1L, KAKAOPAY));
     // then
     assertThat(result).isNotNull();
     verify(kakaopayFeignClient, times(1)).approve(anyString(), any());
