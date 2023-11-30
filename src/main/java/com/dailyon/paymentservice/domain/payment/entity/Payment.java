@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,10 +37,10 @@ public class Payment extends BaseEntity {
 
   @NotNull private Integer totalAmount;
 
-  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY, optional = false)
   private OrderPaymentInfo orderPaymentInfo;
 
-  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY)
+  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY, optional = false)
   private KakaopayInfo kakaopayInfo;
 
   @Builder

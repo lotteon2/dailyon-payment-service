@@ -16,7 +16,7 @@ public class OrderPaymentInfo {
   @Id private Long paymentId;
 
   @MapsId
-  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "payment_id")
   private Payment payment;
 

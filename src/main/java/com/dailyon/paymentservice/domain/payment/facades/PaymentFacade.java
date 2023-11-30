@@ -4,23 +4,20 @@ import com.dailyon.paymentservice.domain.client.MemberFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.client.dto.MemberPointUpdateDTO;
 import com.dailyon.paymentservice.domain.payment.api.request.OrderPaymentRequest;
-import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
+import com.dailyon.paymentservice.domain.payment.message.PaymentEventProducer;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
-import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
-import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 
 // TODO : 코드 리팩토링
 @Service
@@ -29,20 +26,19 @@ public class PaymentFacade {
   private final PaymentService paymentService;
   private final KakaoPayManager kakaoPayManager;
   private final MemberFeignClient memberFeignClient;
+  private final PaymentEventProducer paymentEventProducer;
 
-  public String pointPaymentReady(
-      Long memberId, PointPaymentRequest.PointPaymentReadyRequest request) {
-    String orderId = OrderNoGenerator.generate(memberId);
-    KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(memberId, orderId, request);
+  public String paymentReady(PaymentFacadeRequest.PaymentReadyRequest request) {
+    KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(request);
     return readyResponse.getNextRedirectAppUrl();
   }
 
   // TODO : 예외처리 해야함. 코드 래픽토링 예정
   @Transactional
-  public Long pointPaymentApprove(
-      Long memberId, PointPaymentRequest.PointPaymentApproveRequest request) {
-    KakaopayDTO.ApproveDTO approveDTO = kakaoPayManager.approve(memberId, request);
-    CreatePaymentServiceRequest serviceRequest = approveDTO.toServiceRequest(POINT, KAKAOPAY);
+  public Long paymentApprove(PaymentFacadeRequest.PaymentApproveRequest request) {
+    KakaopayDTO.ApproveDTO approveDTO = kakaoPayManager.approve(request);
+    CreatePaymentServiceRequest serviceRequest =
+        approveDTO.toServiceRequest(request.getType(), request.getMethod());
     Long paymentId = paymentService.createPayment(serviceRequest, approveDTO.getTid());
 
     MemberPointUpdateDTO memberPointUpdateDTO =
@@ -51,7 +47,17 @@ public class PaymentFacade {
             .build();
 
     // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
-    memberFeignClient.pointCharge(memberId, memberPointUpdateDTO);
+    memberFeignClient.pointCharge(request.getMemberId(), memberPointUpdateDTO);
+    return paymentId;
+  }
+
+  @Transactional
+  public Long OrderPaymentApprove(PaymentFacadeRequest.PaymentApproveRequest request) {
+    KakaopayDTO.ApproveDTO approve = kakaoPayManager.approve(request);
+    CreatePaymentServiceRequest serviceRequest = request.toServiceRequest();
+    Long paymentId =
+        paymentService.createOrderPayment(serviceRequest, approve.getOrderId(), approve.getTid());
+    paymentEventProducer.paymentApproved(request.getOrderId());
     return paymentId;
   }
 
