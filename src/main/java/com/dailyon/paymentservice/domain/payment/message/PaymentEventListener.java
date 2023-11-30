@@ -4,7 +4,6 @@ import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -25,12 +24,10 @@ public class PaymentEventListener {
     try {
       PaymentFacadeRequest.PaymentApproveRequest request =
           mapper.readValue(message, PaymentFacadeRequest.PaymentApproveRequest.class);
-      paymentFacade.paymentApprove(request);
+      paymentFacade.OrderPaymentApprove(request);
       ack.acknowledge();
     } catch (JsonProcessingException e) {
       e.printStackTrace();
-    } catch (FeignException e) { // feign 예외도 구분 해야함. kakao feign 에서 터지면 보상, memberFeign에서 터진거면 다른처리
-      paymentEventProducer.paymentFail(message);
     } catch (Exception e) {
       paymentEventProducer.paymentFail(message);
     }
