@@ -30,7 +30,7 @@ public class PaymentFacade {
 
   public String paymentReady(PaymentFacadeRequest.PaymentReadyRequest request) {
     KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(request);
-    return readyResponse.getNextRedirectAppUrl();
+    return readyResponse.getNextRedirectPcUrl();
   }
 
   // TODO : 예외처리 해야함. 코드 래픽토링 예정
