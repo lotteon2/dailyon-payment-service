@@ -2,6 +2,7 @@ package com.dailyon.paymentservice.domain.payment.facades.request;
 
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
+import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,5 +39,22 @@ public class PaymentFacadeRequest {
     private Long memberId;
     private PaymentType type;
     private PaymentMethod method;
+
+    private int quantity;
+    private int deliveryFee;
+    private int totalCouponDiscountPrice;
+    private int usedPoints;
+
+    public CreatePaymentServiceRequest toServiceRequest() {
+      return CreatePaymentServiceRequest.builder()
+          .memberId(memberId)
+          .quantity(quantity)
+          .deliveryFee(deliveryFee)
+          .totalAmount(totalCouponDiscountPrice)
+          .usedPoints(usedPoints)
+          .type(type)
+          .method(method)
+          .build();
+    }
   }
 }

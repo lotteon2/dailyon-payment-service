@@ -19,9 +19,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.ORDER;
-import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
-
 // TODO : 코드 리팩토링
 @Service
 @RequiredArgsConstructor
@@ -44,19 +41,24 @@ public class PaymentFacade {
         approveDTO.toServiceRequest(request.getType(), request.getMethod());
     Long paymentId = paymentService.createPayment(serviceRequest, approveDTO.getTid());
 
-    if (POINT.equals(request.getType())) {
-      MemberPointUpdateDTO memberPointUpdateDTO =
-          MemberPointUpdateDTO.builder()
-              .amount(approveDTO.getAmount().getTotal().longValue())
-              .build();
+    MemberPointUpdateDTO memberPointUpdateDTO =
+        MemberPointUpdateDTO.builder()
+            .amount(approveDTO.getAmount().getTotal().longValue())
+            .build();
 
-      // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
-      memberFeignClient.pointCharge(request.getMemberId(), memberPointUpdateDTO);
-    }
-    if (ORDER.equals(request.getType())) {
-      paymentEventProducer.paymentApproved(request.getOrderId());
-    }
-      return paymentId;
+    // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
+    memberFeignClient.pointCharge(request.getMemberId(), memberPointUpdateDTO);
+    return paymentId;
+  }
+
+  @Transactional
+  public Long OrderPaymentApprove(PaymentFacadeRequest.PaymentApproveRequest request) {
+    KakaopayDTO.ApproveDTO approve = kakaoPayManager.approve(request);
+    CreatePaymentServiceRequest serviceRequest = request.toServiceRequest();
+    Long paymentId =
+        paymentService.createOrderPayment(serviceRequest, approve.getOrderId(), approve.getTid());
+    paymentEventProducer.paymentApproved(request.getOrderId());
+    return paymentId;
   }
 
   public PaymentPageResponse getPayments(

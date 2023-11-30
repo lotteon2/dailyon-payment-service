@@ -52,7 +52,9 @@ class PaymentServiceTest extends IntegrationTestSupport {
     String tid = "1020213";
     // when
     Long paymentId = paymentService.createPayment(request, tid);
-    // then
+    entityManager.flush();
+    entityManager.clear();
+//     then
     Payment getPayment = paymentRepository.findById(paymentId).get();
     assertThat(paymentId).isNotNull().isEqualTo(getPayment.getId());
   }
@@ -139,6 +141,32 @@ class PaymentServiceTest extends IntegrationTestSupport {
     assertThatThrownBy(() -> paymentService.getOrderPayment(orderId, otherMemberId))
         .isInstanceOf(AuthorizationException.class)
         .hasMessage("권한이 없습니다.");
+  }
+
+  @DisplayName("주문 정보와 카카오 결제 정보를 입력 받아 주문 결제를 생성한다.")
+  @Test
+  void createOrderPayment() {
+    // given
+    CreatePaymentServiceRequest request =
+        CreatePaymentServiceRequest.builder()
+            .totalAmount(1000)
+            .memberId(1L)
+            .method(KAKAOPAY)
+            .type(ORDER)
+            .quantity(5)
+            .usedPoints(1500)
+            .deliveryFee(3000)
+            .totalCouponDiscountPrice(2000)
+            .build();
+    String tid = "testTid";
+    String orderId = OrderNoGenerator.generate(1L);
+    // when
+    Long paymentId = paymentService.createOrderPayment(request, orderId, tid);
+    entityManager.flush();
+    entityManager.clear();
+    // then
+    Payment getPayment = paymentRepository.findById(paymentId).get();
+    assertThat(paymentId).isNotNull().isEqualTo(getPayment.getId());
   }
 
   private KakaopayInfo createKakaoPayInfo(Payment payment, String tid) {

@@ -36,7 +36,6 @@ class PaymentClientApiTest extends ControllerTestSupport {
                 .header("memberId", memberId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isOk());
   }
 
@@ -55,7 +54,6 @@ class PaymentClientApiTest extends ControllerTestSupport {
                 .header("memberId", memberId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
@@ -76,7 +74,6 @@ class PaymentClientApiTest extends ControllerTestSupport {
                 .header("memberId", memberId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.cancelAmount").value("취소할 금액은 필수 입니다."));

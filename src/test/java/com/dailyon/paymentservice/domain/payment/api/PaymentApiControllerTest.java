@@ -28,7 +28,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isCreated());
   }
 
@@ -46,7 +45,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.method").value("결제 수단은 필수 입니다."));
@@ -65,7 +63,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/ready")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.totalAmount").value("결제 금액은 필수 입니다."));
@@ -84,7 +81,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isCreated());
   }
 
@@ -102,7 +98,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
@@ -123,7 +118,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
             post("/payments/approve")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.pgToken").value("pgToken은 필수 입니다."));
@@ -145,7 +139,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
                 .param("paymentId", paymentId)
                 .param("type", type)
                 .param("page", page))
-        .andDo(print())
         .andExpect(status().isOk());
   }
 
@@ -158,7 +151,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(get("/payments/orders/{orderId}", orderId).header("memberId", memberId))
-        .andDo(print())
         .andExpect(status().isOk());
   }
 }

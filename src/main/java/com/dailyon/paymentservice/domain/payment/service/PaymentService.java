@@ -1,5 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.service;
 
+import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentAppender;
@@ -25,10 +26,13 @@ public class PaymentService {
     return paymentId;
   }
 
-//  @Transactional
-//  public Long createOrderPayment(CreatePayment) {
-//    return null;
-//  }
+  @Transactional
+  public Long createOrderPayment(
+      CreatePaymentServiceRequest request, String orderId, String payId) {
+    OrderPaymentInfo orderPaymentInfo = request.toOrderPaymentEntity(orderId);
+    Long paymentId = paymentAppender.append(orderPaymentInfo, payId);
+    return paymentId;
+  }
 
   public Slice<Payment> getPayments(
       Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
