@@ -36,6 +36,7 @@ public class PaymentAppender {
     switch (method) {
       case KAKAOPAY:
         KakaopayInfo kakao = KakaopayInfo.builder().tid(tid).payment(payment).build();
+        kakaopayInfoRepository.save(kakao);
         orderPaymentInfoRepository.save(orderPaymentInfo);
         break;
     }
