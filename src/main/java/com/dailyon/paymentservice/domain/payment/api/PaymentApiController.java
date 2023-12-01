@@ -34,7 +34,7 @@ public class PaymentApiController {
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }
 
-  @PostMapping("/approve/{orderId}")
+  @GetMapping("/approve/{orderId}")
   public ResponseEntity<Long> approve(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @PathVariable(name = "orderId") String orderId,
