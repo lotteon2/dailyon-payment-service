@@ -100,9 +100,9 @@ class KakaoPayManagerTest {
     given(kakaopayFeignClient.approve(anyString(), any())).willReturn(approveDTO);
     given(redisRepository.findByOrderId(orderId)).willReturn(Optional.ofNullable(readyDTO));
     PointPaymentRequest.PointPaymentApproveRequest request =
-        new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
+        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
     // when
-    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(request.toFacadeRequest(1L, KAKAOPAY));
+    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(request.toFacadeRequest(1L, orderId,KAKAOPAY));
     // then
     assertThat(result).isNotNull();
     verify(kakaopayFeignClient, times(1)).approve(anyString(), any());

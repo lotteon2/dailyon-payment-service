@@ -34,11 +34,12 @@ public class PaymentApiController {
     return ResponseEntity.status(HttpStatus.CREATED).body(nextUrl);
   }
 
-  @PostMapping("/approve")
+  @PostMapping("/approve/{orderId}")
   public ResponseEntity<Long> approve(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
-      @Valid @RequestBody PointPaymentRequest.PointPaymentApproveRequest request) {
-    Long paymentId = paymentFacade.paymentApprove(request.toFacadeRequest(memberId, KAKAOPAY));
+      @PathVariable(name = "orderId") String orderId,
+      @Valid PointPaymentRequest.PointPaymentApproveRequest request) {
+    Long paymentId = paymentFacade.paymentApprove(request.toFacadeRequest(memberId, orderId, KAKAOPAY));
     return ResponseEntity.status(HttpStatus.CREATED).body(paymentId);
   }
 

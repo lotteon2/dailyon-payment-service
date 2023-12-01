@@ -56,7 +56,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
     Long memberId = 1L;
     String orderId = OrderNoGenerator.generate(1L);
     PointPaymentRequest.PointPaymentApproveRequest approveRequest =
-        new PointPaymentRequest.PointPaymentApproveRequest(orderId, "pgToken");
+        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
     KakaopayDTO.Amount amount = KakaopayDTO.Amount.builder().total(250000).build();
@@ -75,7 +75,8 @@ class PaymentFacadeTest extends IntegrationTestSupport {
             .userId("1")
             .build();
 
-    PaymentFacadeRequest.PaymentApproveRequest request = approveRequest.toFacadeRequest(memberId, KAKAOPAY);
+    PaymentFacadeRequest.PaymentApproveRequest request =
+        approveRequest.toFacadeRequest(memberId, orderId, KAKAOPAY);
     given(kakaoPayManager.approve(request)).willReturn(approveDTO);
     given(memberFeignClient.pointCharge(any(), any())).willReturn(ResponseEntity.ok().build());
     // when

@@ -45,14 +45,11 @@ public class PointPaymentRequest {
   @AllArgsConstructor
   public static class PointPaymentApproveRequest {
 
-    @NotEmpty(message = "주문번호는 필수 입니다.")
-    private String orderId;
-
-    @NotNull(message = "pgToken은 필수 입니다.")
+    @NotEmpty(message = "pgToken은 필수 입니다.")
     private String pgToken;
 
     public PaymentFacadeRequest.PaymentApproveRequest toFacadeRequest(
-        Long memberId, PaymentMethod method) {
+        Long memberId, String orderId, PaymentMethod method) {
       return PaymentFacadeRequest.PaymentApproveRequest.builder()
           .memberId(memberId)
           .orderId(orderId)

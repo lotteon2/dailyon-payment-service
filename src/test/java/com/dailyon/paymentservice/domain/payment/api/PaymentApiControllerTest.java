@@ -73,12 +73,12 @@ class PaymentApiControllerTest extends ControllerTestSupport {
   void pointPaymentApprove() throws Exception {
     // given
     PointPaymentRequest.PointPaymentApproveRequest request =
-        new PointPaymentRequest.PointPaymentApproveRequest("orderId", "pgToken");
+        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
 
     // when // then
     mockMvc
         .perform(
-            post("/payments/approve")
+            post("/payments/approve/{orderId}", "orderId")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated());
@@ -90,12 +90,12 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // given
     String noExistOrderId = null;
     PointPaymentRequest.PointPaymentApproveRequest request =
-        new PointPaymentRequest.PointPaymentApproveRequest(noExistOrderId, "pgToken");
+        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
 
     // when // then
     mockMvc
         .perform(
-            post("/payments/approve")
+            post("/payments/approve/{orderId}", noExistOrderId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isBadRequest())
@@ -110,14 +110,12 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     String orderId = "orderId";
     String noExistPgToken = null;
     PointPaymentRequest.PointPaymentApproveRequest request =
-        new PointPaymentRequest.PointPaymentApproveRequest(orderId, noExistPgToken);
+        new PointPaymentRequest.PointPaymentApproveRequest(noExistPgToken);
 
     // when // then
     mockMvc
-        .perform(
-            post("/payments/approve")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        .perform(post("/payments/approve/{orderId}", orderId).param("pgToken", noExistPgToken))
+        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.pgToken").value("pgToken은 필수 입니다."));
