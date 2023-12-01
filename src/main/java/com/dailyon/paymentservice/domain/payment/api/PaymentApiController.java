@@ -7,13 +7,17 @@ import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentRe
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import java.io.IOException;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
 
@@ -23,6 +27,9 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMeth
 @RequestMapping("/payments")
 public class PaymentApiController {
   private final PaymentFacade paymentFacade;
+
+  @Value("${success_redirect_url}")
+  private String SUCCESS_REDIRECT_URL;
   // TODO: TEST를 위해 required false + defaultValue설정 함 나중에 바꿈
   @PostMapping("/ready")
   public ResponseEntity<String> ready(
@@ -38,8 +45,10 @@ public class PaymentApiController {
   public ResponseEntity<Long> approve(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @PathVariable(name = "orderId") String orderId,
-      @Valid PointPaymentRequest.PointPaymentApproveRequest request) {
-    Long paymentId = paymentFacade.paymentApprove(request.toFacadeRequest(memberId, orderId, KAKAOPAY));
+      @Valid PointPaymentRequest.PointPaymentApproveRequest request, HttpServletResponse response) throws IOException {
+    Long paymentId =
+        paymentFacade.paymentApprove(request.toFacadeRequest(memberId, orderId, KAKAOPAY));
+    response.sendRedirect(SUCCESS_REDIRECT_URL+orderId);
     return ResponseEntity.status(HttpStatus.CREATED).body(paymentId);
   }
 

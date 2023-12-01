@@ -45,7 +45,6 @@ public class PaymentFacade {
         MemberPointUpdateDTO.builder()
             .amount(approveDTO.getAmount().getTotal().longValue())
             .build();
-
     // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
     memberFeignClient.pointCharge(request.getMemberId(), memberPointUpdateDTO);
     return paymentId;

@@ -14,15 +14,20 @@ spring:
     port: 6379
     password:
   # h2 settings
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
-      path: /h2-console
+#  h2:
+#    console:
+#      enabled: true
+#      settings:
+#        web-allow-others: true
+#      path: /h2-console
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:payment-service;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:payment-service;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/payment-service
+    username: ssafy
+    password: ssafy
   jpa:
     hibernate:
       ddl-auto: update
@@ -78,3 +83,5 @@ kakaopay:
   fail_url: ${fail_url}
   cancel_url: ${cancel_url}
   admin_key: ${admin_key}
+
+success_redirect_url : ${success_redirect_url}

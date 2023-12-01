@@ -5,6 +5,7 @@ import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRe
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -41,16 +42,18 @@ public class PointPaymentRequest {
   }
 
   @Getter
+  @Setter
   @NoArgsConstructor
   @AllArgsConstructor
   public static class PointPaymentApproveRequest {
 
     @NotEmpty(message = "pgToken은 필수 입니다.")
-    private String pgToken;
+    private String pg_token;
 
     public PaymentFacadeRequest.PaymentApproveRequest toFacadeRequest(
         Long memberId, String orderId, PaymentMethod method) {
       return PaymentFacadeRequest.PaymentApproveRequest.builder()
+          .pgToken(pg_token)
           .memberId(memberId)
           .orderId(orderId)
           .type(POINT)

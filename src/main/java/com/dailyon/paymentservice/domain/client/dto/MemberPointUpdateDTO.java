@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MemberPointUpdateDTO {
-  private static final String source = "CHARGE";
+  private final String source = "CHARGE";
   private Long amount;
 
   @Builder
