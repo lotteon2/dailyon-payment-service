@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
 import java.io.IOException;
+import java.net.URI;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
 
@@ -28,7 +28,7 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMeth
 public class PaymentApiController {
   private final PaymentFacade paymentFacade;
 
-  @Value("${success_redirect_url}")
+  @Value("${success_url}")
   private String SUCCESS_REDIRECT_URL;
   // TODO: TEST를 위해 required false + defaultValue설정 함 나중에 바꿈
   @PostMapping("/ready")
@@ -45,20 +45,20 @@ public class PaymentApiController {
   public ResponseEntity<Long> approve(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @PathVariable(name = "orderId") String orderId,
-      @Valid PointPaymentRequest.PointPaymentApproveRequest request, HttpServletResponse response) throws IOException {
+      @Valid PointPaymentRequest.PointPaymentApproveRequest request,
+      HttpServletResponse response)
+      throws IOException {
     Long paymentId =
         paymentFacade.paymentApprove(request.toFacadeRequest(memberId, orderId, KAKAOPAY));
-    response.sendRedirect(SUCCESS_REDIRECT_URL+orderId);
-    return ResponseEntity.status(HttpStatus.CREATED).body(paymentId);
+    return ResponseEntity.created(URI.create(SUCCESS_REDIRECT_URL + orderId)).body(paymentId);
   }
 
   @GetMapping("")
   public ResponseEntity<PaymentPageResponse> getPayments(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @PageableDefault(size = 8) Pageable pageable,
-      @RequestParam(name = "paymentId", required = false) Long paymentId,
       @RequestParam(name = "type", required = false) PaymentType type) {
-    return ResponseEntity.ok(paymentFacade.getPayments(pageable, memberId, paymentId, type));
+    return ResponseEntity.ok(paymentFacade.getPayments(pageable, memberId, type));
   }
 
   @GetMapping("/orders/{orderId}")

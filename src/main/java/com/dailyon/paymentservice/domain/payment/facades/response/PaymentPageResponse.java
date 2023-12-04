@@ -3,7 +3,7 @@ package com.dailyon.paymentservice.domain.payment.facades.response;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,16 +12,19 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class PaymentPageResponse {
   private List<PaymentDetailResponse> payments;
-  private boolean hasNext;
+  private Integer totalPages;
+  private Long totalElements;
 
-  public PaymentPageResponse(List<PaymentDetailResponse> payments, boolean hasNext) {
+  public PaymentPageResponse(
+      List<PaymentDetailResponse> payments, Integer totalPages, Long totalElements) {
     this.payments = payments;
-    this.hasNext = hasNext;
+    this.totalPages = totalPages;
+    this.totalElements = totalElements;
   }
 
-  public static PaymentPageResponse from(Slice<Payment> slice) {
+  public static PaymentPageResponse from(Page<Payment> page) {
     List<PaymentDetailResponse> payments =
-        slice.getContent().stream().map(PaymentDetailResponse::from).collect(Collectors.toList());
-    return new PaymentPageResponse(payments, slice.hasNext());
+        page.getContent().stream().map(PaymentDetailResponse::from).collect(Collectors.toList());
+    return new PaymentPageResponse(payments, page.getTotalPages(), page.getTotalElements());
   }
 }

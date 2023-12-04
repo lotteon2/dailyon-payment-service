@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import javax.validation.constraints.NotNull;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,6 +17,7 @@ class PaymentClientApiTest extends ControllerTestSupport {
 
   @NotNull(message = "결제 수단은 필수 입니다.")
   private PaymentMethod method;
+
   @NotNull(message = "결제 금액은 필수 입니다.")
   private Integer totalAmount;
 

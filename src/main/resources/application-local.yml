@@ -84,4 +84,4 @@ kakaopay:
   cancel_url: ${cancel_url}
   admin_key: ${admin_key}
 
-success_redirect_url : ${success_redirect_url}
+success_url: ${success_redirect_url}

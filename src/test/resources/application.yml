@@ -35,3 +35,4 @@ logging:
       springframework:
         transaction:
           interceptor: TRACE
+success_url: ${success_redirect_url}
