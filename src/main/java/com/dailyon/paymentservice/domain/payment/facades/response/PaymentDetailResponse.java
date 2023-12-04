@@ -3,22 +3,26 @@ package com.dailyon.paymentservice.domain.payment.facades.response;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 public class PaymentDetailResponse {
 
-  private PaymentStatus status;
-  private PaymentMethod method;
+  private String status;
+  private String method;
   private Integer totalAmount;
-  private String createdAt;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+  private LocalDateTime createdAt;
 
   @Builder
   private PaymentDetailResponse(
-      PaymentStatus status, PaymentMethod method, Integer totalAmount, String createdAt) {
+      String status, String method, Integer totalAmount, LocalDateTime createdAt) {
     this.status = status;
     this.method = method;
     this.totalAmount = totalAmount;
@@ -27,10 +31,10 @@ public class PaymentDetailResponse {
 
   public static PaymentDetailResponse from(Payment payment) {
     return PaymentDetailResponse.builder()
-        .method(payment.getMethod())
-        .status(payment.getStatus())
+        .method(payment.getMethod().getMessage())
+        .status(payment.getStatus().getMessage())
         .totalAmount(payment.getTotalAmount())
-        .createdAt(payment.getCreatedAt().toString())
+        .createdAt(payment.getCreatedAt())
         .build();
   }
 }
