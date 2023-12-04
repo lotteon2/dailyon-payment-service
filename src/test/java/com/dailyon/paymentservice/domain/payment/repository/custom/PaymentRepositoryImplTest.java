@@ -12,9 +12,9 @@ import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -41,11 +41,11 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
     }
     Pageable page = PageRequest.of(0, 8);
     // when
-    Slice<Payment> payments = paymentRepository.findByMemberId(page, 1L, null, POINT);
+    Page<Payment> payments = paymentRepository.findByMemberId(page, 1L, POINT);
     // then
     assertThat(payments).isNotNull();
-    assertThat(payments.getContent()).isNotEmpty().hasSize(8);
-    assertThat(payments.hasNext()).isTrue();
+    assertThat(payments.getTotalElements()).isEqualTo(9);
+    assertThat(payments.getTotalPages()).isEqualTo(2);
   }
 
   @DisplayName("주문 번호로 주문 결제 정보를 조회한다.")

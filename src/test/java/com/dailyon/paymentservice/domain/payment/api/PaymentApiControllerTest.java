@@ -9,7 +9,6 @@ import org.springframework.http.MediaType;
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -80,21 +79,22 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andExpect(status().isCreated());
   }
 
-//  @DisplayName("카카오 페이 결제 승인 요청 시 주문 번호는 필수 값이다.")
-//  @Test
-//  void pointPaymentApproveWithNoExistOrderId() throws Exception {
-//    // given
-//    String noExistOrderId = null;
-//    PointPaymentRequest.PointPaymentApproveRequest request =
-//        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
-//
-//    // when // then
-//    mockMvc
-//        .perform(get("/payments/approve/{orderId}", noExistOrderId).param("pg_token", "pgtoken"))
-//        .andExpect(status().isBadRequest())
-//        .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-//        .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
-//  }
+  //  @DisplayName("카카오 페이 결제 승인 요청 시 주문 번호는 필수 값이다.")
+  //  @Test
+  //  void pointPaymentApproveWithNoExistOrderId() throws Exception {
+  //    // given
+  //    String noExistOrderId = null;
+  //    PointPaymentRequest.PointPaymentApproveRequest request =
+  //        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
+  //
+  //    // when // then
+  //    mockMvc
+  //        .perform(get("/payments/approve/{orderId}", noExistOrderId).param("pg_token",
+  // "pgtoken"))
+  //        .andExpect(status().isBadRequest())
+  //        .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+  //        .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
+  //  }
 
   @DisplayName("카카오 페이 결제 승인 요청 시 pgToken은 필수 값이다.")
   @Test
@@ -108,7 +108,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(get("/payments/approve/{orderId}", orderId).param("pg_token", noExistPgToken))
-        .andDo(print())
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
         .andExpect(jsonPath("$.validation.pg_token").value("pgToken은 필수 입니다."));

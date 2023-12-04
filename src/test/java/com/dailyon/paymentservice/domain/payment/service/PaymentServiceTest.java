@@ -16,9 +16,9 @@ import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -54,7 +54,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
     Long paymentId = paymentService.createPayment(request, tid);
     entityManager.flush();
     entityManager.clear();
-//     then
+    //     then
     Payment getPayment = paymentRepository.findById(paymentId).get();
     assertThat(paymentId).isNotNull().isEqualTo(getPayment.getId());
   }
@@ -72,11 +72,11 @@ class PaymentServiceTest extends IntegrationTestSupport {
     }
     Pageable page = PageRequest.of(0, 8);
     // when
-    Slice<Payment> payments = paymentService.getPayments(page, memberId, paymentId, type);
+    Page<Payment> payments = paymentService.getPayments(page, memberId, type);
     // then
     assertThat(payments).isNotNull();
-    assertThat(payments.getContent()).isNotEmpty().hasSize(8);
-    assertThat(payments.hasNext()).isTrue();
+    assertThat(payments.getTotalElements()).isEqualTo(9);
+    assertThat(payments.getTotalPages()).isEqualTo(2);
   }
 
   @DisplayName("주문 번호로 해당 주문의 결제 내역을 조회한다.")

@@ -7,6 +7,7 @@ import com.dailyon.paymentservice.domain.payment.implement.PaymentAppender;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -34,10 +35,10 @@ public class PaymentService {
     return paymentId;
   }
 
-  public Slice<Payment> getPayments(
-      Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
-    Slice<Payment> slice = paymentReader.read(pageable, memberId, paymentId, type);
-    return slice;
+  public Page<Payment> getPayments(
+      Pageable pageable, Long memberId, PaymentType type) {
+    Page<Payment> page = paymentReader.read(pageable, memberId, type);
+    return page;
   }
 
   public Payment getOrderPayment(String orderId, Long memberId) {

@@ -6,8 +6,8 @@ import com.dailyon.paymentservice.domain.payment.exception.AuthorizationExceptio
 import com.dailyon.paymentservice.domain.payment.exception.PaymentNotFoundException;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 public class PaymentReader {
   private final PaymentRepository paymentRepository;
 
-  public Slice<Payment> read(Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
-    return paymentRepository.findByMemberId(pageable, memberId, paymentId, type);
+  public Page<Payment> read(Pageable pageable, Long memberId, PaymentType type) {
+    return paymentRepository.findByMemberId(pageable, memberId, type);
   }
 
   public Payment read(String orderId, Long memberId) {

@@ -14,6 +14,7 @@ import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -61,9 +62,9 @@ public class PaymentFacade {
   }
 
   public PaymentPageResponse getPayments(
-      Pageable pageable, Long memberId, Long paymentId, PaymentType type) {
-    Slice<Payment> slice = paymentService.getPayments(pageable, memberId, paymentId, type);
-    return PaymentPageResponse.from(slice);
+      Pageable pageable, Long memberId,PaymentType type) {
+    Page<Payment> page = paymentService.getPayments(pageable, memberId, type);
+    return PaymentPageResponse.from(page);
   }
 
   public OrderPaymentResponse getOrderPayment(String orderId, Long memberId) {
