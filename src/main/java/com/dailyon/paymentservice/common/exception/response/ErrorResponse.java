@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.exception.response;
+package com.dailyon.paymentservice.common.exception.response;
 
 import lombok.Builder;
 import lombok.Data;

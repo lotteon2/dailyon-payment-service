@@ -16,7 +16,6 @@ import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentSe
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,8 +60,7 @@ public class PaymentFacade {
     return paymentId;
   }
 
-  public PaymentPageResponse getPayments(
-      Pageable pageable, Long memberId,PaymentType type) {
+  public PaymentPageResponse getPayments(Pageable pageable, Long memberId, PaymentType type) {
     Page<Payment> page = paymentService.getPayments(pageable, memberId, type);
     return PaymentPageResponse.from(page);
   }

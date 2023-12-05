@@ -1,6 +1,6 @@
 package com.dailyon.paymentservice.domain.payment.exception;
 
-import com.dailyon.paymentservice.exception.CustomException;
+import com.dailyon.paymentservice.common.exception.CustomException;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
