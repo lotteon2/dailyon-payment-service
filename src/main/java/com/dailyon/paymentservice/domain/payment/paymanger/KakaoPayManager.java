@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.ORDER;
-
 @RequiredArgsConstructor
 @Component
 @Slf4j
@@ -33,9 +31,6 @@ public class KakaoPayManager {
 
   @Value("${kakaopay.approval_url}")
   private String APPROVAL_URL;
-
-  @Value("${kakaopay.order_approval_url}")
-  private String ORDER_APPROVAL_URL;
 
   @Value("${kakaopay.fail_url}")
   private String FAIL_URL;
@@ -89,11 +84,7 @@ public class KakaoPayManager {
     readyDTOMap.add("quantity", String.valueOf(request.getQuantity()));
     readyDTOMap.add("total_amount", request.getTotalAmount().toString());
     readyDTOMap.add("tax_free_amount", String.valueOf(request.getQuantity()));
-    readyDTOMap.add(
-        "approval_url",
-        ORDER.equals(request.getType())
-            ? ORDER_APPROVAL_URL
-            : APPROVAL_URL + "/" + request.getOrderId());
+    readyDTOMap.add("approval_url", APPROVAL_URL + "/" + request.getOrderId());
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
     return readyDTOMap;
