@@ -14,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.net.URI;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
@@ -45,9 +43,7 @@ public class PaymentApiController {
   public ResponseEntity<Long> approve(
       @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
       @PathVariable(name = "orderId") String orderId,
-      @Valid PointPaymentRequest.PointPaymentApproveRequest request,
-      HttpServletResponse response)
-      throws IOException {
+      @Valid PointPaymentRequest.PointPaymentApproveRequest request) {
     Long paymentId =
         paymentFacade.paymentApprove(request.toFacadeRequest(memberId, orderId, KAKAOPAY));
     return ResponseEntity.created(URI.create(SUCCESS_REDIRECT_URL + orderId)).body(paymentId);
