@@ -10,7 +10,7 @@ spring:
     username: guest
     password: guest
   redis:
-    host: localhost
+    host: redis-cluster
     port: 6379
     password:
   # DB settings
