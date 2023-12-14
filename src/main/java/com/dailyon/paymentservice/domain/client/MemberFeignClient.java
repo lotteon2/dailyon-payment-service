@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(
     name = "member-service",
+    url = "${endpoint.member-service}",
     configuration = DefaultFeignConfig.class) // 임시 url
 public interface MemberFeignClient {
 

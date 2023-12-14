@@ -85,3 +85,6 @@ kakaopay:
   admin_key: ${admin_key}
 
 success_url: ${success_redirect_url}
+
+endpoint:
+  member-service: localhost:8080
