@@ -55,7 +55,7 @@ spring:
 
   cloud:
     discovery:
-      enabled: false
+      enabled: true
 
 eureka:
   client:
