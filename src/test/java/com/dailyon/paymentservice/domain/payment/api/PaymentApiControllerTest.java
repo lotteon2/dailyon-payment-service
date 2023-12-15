@@ -76,7 +76,7 @@ class PaymentApiControllerTest extends ControllerTestSupport {
     // when // then
     mockMvc
         .perform(get("/payments/approve/{orderId}", "orderId").param("pg_token", pg_token))
-        .andExpect(status().isCreated());
+        .andExpect(status().isFound());
   }
 
   //  @DisplayName("카카오 페이 결제 승인 요청 시 주문 번호는 필수 값이다.")

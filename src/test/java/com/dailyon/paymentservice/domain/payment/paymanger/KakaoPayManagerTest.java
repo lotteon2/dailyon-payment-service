@@ -77,6 +77,8 @@ class KakaoPayManagerTest {
             .createdAt("createdAt")
             .build();
 
+    readyDTO.setMemberId(1L);
+
     String orderId = OrderNoGenerator.generate(1L);
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime approvedAt = LocalDateTime.now();
