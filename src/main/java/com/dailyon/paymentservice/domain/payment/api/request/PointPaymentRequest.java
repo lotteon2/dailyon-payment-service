@@ -50,11 +50,9 @@ public class PointPaymentRequest {
     @NotEmpty(message = "pgToken은 필수 입니다.")
     private String pg_token;
 
-    public PaymentFacadeRequest.PaymentApproveRequest toFacadeRequest(
-        Long memberId, String orderId, PaymentMethod method) {
+    public PaymentFacadeRequest.PaymentApproveRequest toFacadeRequest(String orderId, PaymentMethod method) {
       return PaymentFacadeRequest.PaymentApproveRequest.builder()
           .pgToken(pg_token)
-          .memberId(memberId)
           .orderId(orderId)
           .type(POINT)
           .method(method)

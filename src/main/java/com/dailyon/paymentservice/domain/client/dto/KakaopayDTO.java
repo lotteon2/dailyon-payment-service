@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class KakaopayDTO {
 
-  @Getter
+  @Getter @Setter
   @ToString
   @NoArgsConstructor
   @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -25,6 +25,7 @@ public class KakaopayDTO {
     private String androidAppScheme;
     private String iosAppScheme;
     private String createdAt;
+    private Long memberId;
 
     @Builder
     private ReadyDTO(

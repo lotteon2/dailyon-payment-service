@@ -102,7 +102,7 @@ class KakaoPayManagerTest {
     PointPaymentRequest.PointPaymentApproveRequest request =
         new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
     // when
-    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(request.toFacadeRequest(1L, orderId,KAKAOPAY));
+    KakaopayDTO.ApproveDTO result = kakaoPayManager.approve(request.toFacadeRequest(orderId,KAKAOPAY));
     // then
     assertThat(result).isNotNull();
     verify(kakaopayFeignClient, times(1)).approve(anyString(), any());

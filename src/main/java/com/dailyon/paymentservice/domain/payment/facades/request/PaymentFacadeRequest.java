@@ -36,7 +36,6 @@ public class PaymentFacadeRequest {
 
     private String orderId;
     private String pgToken;
-    private Long memberId;
     private PaymentType type;
     private PaymentMethod method;
 
@@ -47,7 +46,6 @@ public class PaymentFacadeRequest {
 
     public CreatePaymentServiceRequest toServiceRequest() {
       return CreatePaymentServiceRequest.builder()
-          .memberId(memberId)
           .quantity(quantity)
           .deliveryFee(deliveryFee)
           .totalAmount(totalCouponDiscountPrice)

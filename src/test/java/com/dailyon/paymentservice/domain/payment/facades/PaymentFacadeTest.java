@@ -76,7 +76,7 @@ class PaymentFacadeTest extends IntegrationTestSupport {
             .build();
 
     PaymentFacadeRequest.PaymentApproveRequest request =
-        approveRequest.toFacadeRequest(memberId, orderId, KAKAOPAY);
+        approveRequest.toFacadeRequest(orderId, KAKAOPAY);
     given(kakaoPayManager.approve(request)).willReturn(approveDTO);
     given(memberFeignClient.pointCharge(any(), any())).willReturn(ResponseEntity.ok().build());
     // when

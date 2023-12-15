@@ -47,18 +47,19 @@ public class KakaoPayManager {
   public KakaopayDTO.ReadyDTO ready(PaymentFacadeRequest.PaymentReadyRequest request) {
     MultiValueMap data = toPaymentReadyDTO(request);
     KakaopayDTO.ReadyDTO responseDTO = client.ready("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    responseDTO.setMemberId(request.getMemberId());
     redisRepository.saveReadyInfo(request.getOrderId(), responseDTO);
     return responseDTO;
   }
 
   // TODO : 나중 리팩토링 예정
   public KakaopayDTO.ApproveDTO approve(PaymentFacadeRequest.PaymentApproveRequest request) {
-    String tid =
+
+    KakaopayDTO.ReadyDTO readyDTO =
         redisRepository
             .findByOrderId(request.getOrderId())
-            .orElseThrow(ExpiredPaymentTimeException::new)
-            .getTid();
-    MultiValueMap data = toPaymentApproveDTO(tid, request);
+            .orElseThrow(ExpiredPaymentTimeException::new);
+    MultiValueMap data = toPaymentApproveDTO(readyDTO.getTid(), request, readyDTO.getMemberId());
     KakaopayDTO.ApproveDTO responseDTO = client.approve("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
     return responseDTO;
   }
@@ -100,12 +101,12 @@ public class KakaoPayManager {
   }
 
   private MultiValueMap toPaymentApproveDTO(
-      String tid, PaymentFacadeRequest.PaymentApproveRequest request) {
+      String tid, PaymentFacadeRequest.PaymentApproveRequest request, Long memberId) {
     MultiValueMap<String, String> approveDTOMap = new LinkedMultiValueMap<>();
     approveDTOMap.add("cid", CID);
     approveDTOMap.add("tid", tid);
     approveDTOMap.add("partner_order_id", request.getOrderId());
-    approveDTOMap.add("partner_user_id", request.getMemberId().toString());
+    approveDTOMap.add("partner_user_id", memberId.toString());
     approveDTOMap.add("pg_token", request.getPgToken());
     return approveDTOMap;
   }
