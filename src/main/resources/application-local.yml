@@ -71,10 +71,6 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
-      springframework:
-        jdbc:
-          core:
-            JdbcTemplate: DEBUG
 
 kakaopay:
   cid: ${cid}
