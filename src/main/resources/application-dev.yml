@@ -49,7 +49,5 @@ eureka:
     # 따라서 쿠버네티스, 도커와 같이 임의의 호스트 이름을 가지는 경우는 false로 하면 클라이언트를 인식하지 못한다.
     prefer-ip-address: true
 
-success_url: ${success_redirect_url}
-
 endpoint:
   member-service: http://member-service:8080
