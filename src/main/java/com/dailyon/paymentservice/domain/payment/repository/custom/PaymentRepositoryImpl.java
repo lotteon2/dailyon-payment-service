@@ -13,10 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static com.dailyon.paymentservice.domain.payment.entity.QKakaopayInfo.kakaopayInfo;
-import static com.dailyon.paymentservice.domain.payment.entity.QOrderPaymentInfo.orderPaymentInfo;
 import static com.dailyon.paymentservice.domain.payment.entity.QPayment.payment;
 
 @RequiredArgsConstructor
@@ -49,30 +46,6 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
             .fetch();
 
     return PageableExecutionUtils.getPage(fetch, pageable, () -> getTotalPageCount(memberId));
-  }
-
-  @Override
-  public Optional<Payment> findByOrderIdFetch(String orderId) {
-    return Optional.ofNullable(
-        queryFactory
-            .selectFrom(payment)
-            .join(payment.orderPaymentInfo, orderPaymentInfo)
-            .fetchJoin()
-            .join(payment.kakaopayInfo, kakaopayInfo)
-            .fetchJoin()
-            .where(payment.orderPaymentInfo.orderId.eq(orderId))
-            .fetchOne());
-  }
-
-  @Override
-  public Optional<Payment> findKakaoPaymentByOrderId(String orderId) {
-    return Optional.of(
-        queryFactory
-            .selectFrom(payment)
-            .join(payment.kakaopayInfo, kakaopayInfo)
-            .fetchJoin()
-            .where(payment.orderPaymentInfo.orderId.eq(orderId))
-            .fetchOne());
   }
 
   private BooleanExpression eqType(PaymentType type) {

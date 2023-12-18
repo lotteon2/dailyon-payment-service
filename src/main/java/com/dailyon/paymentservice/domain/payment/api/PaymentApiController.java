@@ -3,7 +3,6 @@ package com.dailyon.paymentservice.domain.payment.api;
 import com.dailyon.paymentservice.domain.payment.api.request.PointPaymentRequest;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
-import com.dailyon.paymentservice.domain.payment.facades.response.OrderPaymentResponse;
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
 import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
 
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod.KAKAOPAY;
 
@@ -43,11 +41,12 @@ public class PaymentApiController {
 
   @GetMapping("/approve/{orderId}")
   public ResponseEntity<Long> approve(
-          @PathVariable(name = "orderId") String orderId,
-          @Valid PointPaymentRequest.PointPaymentApproveRequest request, HttpServletResponse response) throws IOException {
-    Long paymentId =
-        paymentFacade.paymentApprove(request.toFacadeRequest(orderId, KAKAOPAY));
-    response.sendRedirect(SUCCESS_REDIRECT_URL+orderId);
+      @PathVariable(name = "orderId") String orderId,
+      @Valid PointPaymentRequest.PointPaymentApproveRequest request,
+      HttpServletResponse response)
+      throws IOException {
+    Long paymentId = paymentFacade.paymentApprove(request.toFacadeRequest(orderId, KAKAOPAY));
+    response.sendRedirect(SUCCESS_REDIRECT_URL + orderId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
 
@@ -57,12 +56,5 @@ public class PaymentApiController {
       @PageableDefault(size = 8) Pageable pageable,
       @RequestParam(name = "type", required = false) PaymentType type) {
     return ResponseEntity.ok(paymentFacade.getPayments(pageable, memberId, type));
-  }
-
-  @GetMapping("/orders/{orderId}")
-  public ResponseEntity<OrderPaymentResponse> getOrderPayment(
-      @RequestHeader(value = "memberId", defaultValue = "1") Long memberId,
-      @PathVariable(name = "orderId") String orderId) {
-    return ResponseEntity.ok(paymentFacade.getOrderPayment(orderId, memberId));
   }
 }

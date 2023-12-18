@@ -18,13 +18,14 @@ public class PaymentEventListener {
   private final PaymentFacade paymentFacade;
   private final PaymentEventProducer paymentEventProducer;
 
-  @KafkaListener(topics = "stock-deduct-success")
+  @KafkaListener(topics = "use-member-points")
   public void doProcess(String message, Acknowledgment ack) {
-    log.info("stock-deduct-success");
+    log.info("use-member-points");
     try {
       PaymentFacadeRequest.PaymentApproveRequest request =
-          mapper.readValue(message, PaymentFacadeRequest.PaymentApproveRequest.class);
-      paymentFacade.OrderPaymentApprove(request);
+          mapper.readValue(message, PaymentFacadeRequest.PaymentApproveRequest.class); // TODO OrderDTO 로 바꿔야함
+//      paymentFacade.OrderPaymentApprove(request);
+      paymentEventProducer.approvePayment(request.getOrderId());
       ack.acknowledge();
     } catch (JsonProcessingException e) {
       e.printStackTrace();

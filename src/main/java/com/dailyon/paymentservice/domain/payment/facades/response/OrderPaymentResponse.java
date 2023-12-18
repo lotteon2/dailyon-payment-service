@@ -36,16 +36,4 @@ public class OrderPaymentResponse {
     this.totalAmount = totalAmount;
     this.createdAt = createdAt;
   }
-
-  public static OrderPaymentResponse from(Payment payment) {
-    return OrderPaymentResponse.builder()
-        .totalCouponDiscountPrice(payment.getOrderPaymentInfo().getTotalCouponDiscountAmount())
-        .deliveryFee(payment.getOrderPaymentInfo().getDeliveryFee())
-        .usedPoints(payment.getOrderPaymentInfo().getUsedPoints())
-        .method(payment.getMethod())
-        .status(payment.getStatus())
-        .totalAmount(payment.getTotalAmount())
-        .createdAt(payment.getCreatedAt().toString())
-        .build();
-  }
 }

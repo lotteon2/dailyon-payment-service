@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 public class PaymentEventProducer {
   private final KafkaTemplate<String, String> kafkaTemplate;
 
-  public void paymentApproved(String orderId) {
+  public void approvePayment(String orderId) {
     log.info("payment-approved -> orderId {}", orderId);
-    kafkaTemplate.send("payment-approved", orderId);
+    kafkaTemplate.send("approve-payment", orderId);
   }
 
   public void paymentFail(String message) {
     log.info("payment-fail");
-    kafkaTemplate.send("payment-fail", message);
+    kafkaTemplate.send("cancel-order", message); // TODO OrderDTO로 바꿔야함
   }
 }

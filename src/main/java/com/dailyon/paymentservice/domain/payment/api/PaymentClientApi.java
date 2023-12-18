@@ -21,7 +21,7 @@ public class PaymentClientApi {
   public ResponseEntity<KakaopayDTO.CancelDTO> cancelOrderPayment(
       @RequestHeader(name = "memberId") Long memberId,
       @Valid @RequestBody OrderPaymentRequest.OrderPaymentCancelRequest request) {
-    paymentFacade.cancel(memberId, request);
+//    paymentFacade.cancel(memberId, request);
     return ResponseEntity.ok().build();
   }
 

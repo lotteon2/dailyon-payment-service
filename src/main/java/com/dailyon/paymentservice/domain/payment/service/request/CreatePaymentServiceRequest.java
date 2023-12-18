@@ -1,6 +1,5 @@
 package com.dailyon.paymentservice.domain.payment.service.request;
 
-import com.dailyon.paymentservice.domain.payment.entity.OrderPaymentInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
@@ -53,13 +52,4 @@ public class CreatePaymentServiceRequest {
         .build();
   }
 
-  public OrderPaymentInfo toOrderPaymentEntity(String orderId) {
-    return OrderPaymentInfo.builder()
-            .payment(toEntity())
-            .orderId(orderId)
-            .totalCouponDiscountAmount(totalCouponDiscountPrice)
-            .deliveryFee(deliveryFee)
-            .usedPoints(usedPoints)
-            .build();
-  }
 }

@@ -38,9 +38,6 @@ public class Payment extends BaseEntity {
   @NotNull private Integer totalAmount;
 
   @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY, optional = false)
-  private OrderPaymentInfo orderPaymentInfo;
-
-  @OneToOne(mappedBy = "payment", fetch = FetchType.LAZY, optional = false)
   private KakaopayInfo kakaopayInfo;
 
   @Builder

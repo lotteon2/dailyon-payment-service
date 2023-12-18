@@ -79,23 +79,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
         .andExpect(status().isFound());
   }
 
-  //  @DisplayName("카카오 페이 결제 승인 요청 시 주문 번호는 필수 값이다.")
-  //  @Test
-  //  void pointPaymentApproveWithNoExistOrderId() throws Exception {
-  //    // given
-  //    String noExistOrderId = null;
-  //    PointPaymentRequest.PointPaymentApproveRequest request =
-  //        new PointPaymentRequest.PointPaymentApproveRequest("pgToken");
-  //
-  //    // when // then
-  //    mockMvc
-  //        .perform(get("/payments/approve/{orderId}", noExistOrderId).param("pg_token",
-  // "pgtoken"))
-  //        .andExpect(status().isBadRequest())
-  //        .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
-  //        .andExpect(jsonPath("$.validation.orderId").value("주문번호는 필수 입니다."));
-  //  }
-
   @DisplayName("카카오 페이 결제 승인 요청 시 pgToken은 필수 값이다.")
   @Test
   void pointPaymentApproveWithNullPgToken() throws Exception {
@@ -129,18 +112,6 @@ class PaymentApiControllerTest extends ControllerTestSupport {
                 .param("paymentId", paymentId)
                 .param("type", type)
                 .param("page", page))
-        .andExpect(status().isOk());
-  }
-
-  @DisplayName("주문 결제 내역을 조회 한다.")
-  @Test
-  void getOrderPayment() throws Exception {
-    // given
-    Long memberId = 1L;
-    String orderId = "orderId";
-    // when // then
-    mockMvc
-        .perform(get("/payments/orders/{orderId}", orderId).header("memberId", memberId))
         .andExpect(status().isOk());
   }
 }

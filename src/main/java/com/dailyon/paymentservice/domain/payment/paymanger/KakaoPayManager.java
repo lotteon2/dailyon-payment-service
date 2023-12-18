@@ -2,7 +2,6 @@ package com.dailyon.paymentservice.domain.payment.paymanger;
 
 import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
-import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
@@ -64,12 +63,12 @@ public class KakaoPayManager {
     return responseDTO;
   }
 
-  public KakaopayDTO.CancelDTO cancel(String orderId, Integer cancelAmount, Long memberId) {
-    Payment payment = paymentReader.readKakao(orderId, memberId);
-    MultiValueMap data = toPaymentCancelDTO(payment.getKakaopayInfo().getTid(), cancelAmount);
-    KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
-    return responseDTO;
-  }
+  //  public KakaopayDTO.CancelDTO cancel(String orderId, Integer cancelAmount, Long memberId) {
+  //    Payment payment = paymentReader.readKakao(orderId, memberId);
+  //    MultiValueMap data = toPaymentCancelDTO(payment.getKakaopayInfo().getTid(), cancelAmount);
+  //    KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+  //    return responseDTO;
+  //  }
 
   private MultiValueMap toPaymentCancelDTO(String tid, Integer cancelAmount) {
     MultiValueMap<String, String> cancelDTO = new LinkedMultiValueMap<>();
