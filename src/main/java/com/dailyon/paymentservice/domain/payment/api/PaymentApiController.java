@@ -46,6 +46,7 @@ public class PaymentApiController {
       HttpServletResponse response)
       throws IOException {
     Long paymentId = paymentFacade.paymentApprove(request.toFacadeRequest(orderId, KAKAOPAY));
+    System.out.println(SUCCESS_REDIRECT_URL+orderId);
     response.sendRedirect(SUCCESS_REDIRECT_URL + orderId);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }

@@ -10,12 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class PaymentEventProducer {
   private final KafkaTemplate<String, String> kafkaTemplate;
-
-  public void approvePayment(String orderId) {
-    log.info("payment-approved -> orderId {}", orderId);
-    kafkaTemplate.send("approve-payment", orderId);
-  }
-
+  
   public void paymentFail(String message) {
     log.info("payment-fail");
     kafkaTemplate.send("cancel-order", message); // TODO OrderDTO로 바꿔야함
