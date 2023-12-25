@@ -7,7 +7,6 @@ import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
 import com.dailyon.paymentservice.domain.payment.facades.response.PaymentPageResponse;
-import com.dailyon.paymentservice.domain.payment.message.PaymentEventProducer;
 import com.dailyon.paymentservice.domain.payment.paymanger.KakaoPayManager;
 import com.dailyon.paymentservice.domain.payment.service.PaymentService;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
@@ -24,7 +23,6 @@ public class PaymentFacade {
   private final PaymentService paymentService;
   private final KakaoPayManager kakaoPayManager;
   private final MemberFeignClient memberFeignClient;
-  private final PaymentEventProducer paymentEventProducer;
 
   public String paymentReady(PaymentFacadeRequest.PaymentReadyRequest request) {
     KakaopayDTO.ReadyDTO readyResponse = kakaoPayManager.ready(request);
@@ -39,12 +37,14 @@ public class PaymentFacade {
         approveDTO.toServiceRequest(request.getType(), request.getMethod());
     Long paymentId = paymentService.createPayment(serviceRequest, approveDTO.getTid());
 
-    MemberPointUpdateDTO memberPointUpdateDTO =
-        MemberPointUpdateDTO.builder()
-            .amount(approveDTO.getAmount().getTotal().longValue())
-            .build();
-    // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
-    memberFeignClient.pointCharge(Long.valueOf(approveDTO.getUserId()), memberPointUpdateDTO);
+    if (PaymentType.POINT.equals(request.getType())) {
+      MemberPointUpdateDTO memberPointUpdateDTO =
+          MemberPointUpdateDTO.builder()
+              .amount(approveDTO.getAmount().getTotal().longValue())
+              .build();
+      // pointRecharge 실패하게 되면 kakaopay 결제 취소 요청 보내는 로직 결제 취소 때 작성하고 리팩토링
+      memberFeignClient.pointCharge(Long.valueOf(approveDTO.getUserId()), memberPointUpdateDTO);
+    }
     return paymentId;
   }
 

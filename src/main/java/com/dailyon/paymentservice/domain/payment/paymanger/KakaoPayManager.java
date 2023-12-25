@@ -53,7 +53,6 @@ public class KakaoPayManager {
 
   // TODO : 나중 리팩토링 예정
   public KakaopayDTO.ApproveDTO approve(PaymentFacadeRequest.PaymentApproveRequest request) {
-
     KakaopayDTO.ReadyDTO readyDTO =
         redisRepository
             .findByOrderId(request.getOrderId())
@@ -87,7 +86,9 @@ public class KakaoPayManager {
     readyDTOMap.add("partner_user_id", request.getMemberId().toString());
     readyDTOMap.add("item_name", request.getProductName());
     readyDTOMap.add("quantity", String.valueOf(request.getQuantity()));
-    readyDTOMap.add("total_amount", request.getTotalAmount().toString());
+    readyDTOMap.add(
+        "total_amount",
+        request.getTotalAmount() <= 100 ? "100" : request.getTotalAmount().toString());
     readyDTOMap.add("tax_free_amount", String.valueOf(request.getQuantity()));
     readyDTOMap.add(
         "approval_url",
