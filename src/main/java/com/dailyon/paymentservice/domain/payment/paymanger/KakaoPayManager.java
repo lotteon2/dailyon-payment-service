@@ -93,7 +93,7 @@ public class KakaoPayManager {
     readyDTOMap.add(
         "approval_url",
         POINT.equals(request.getType())
-            ? APPROVAL_URL
+            ? APPROVAL_URL + "/" + request.getOrderId()
             : ORDER_APPROVAL_URL + "/" + request.getOrderId());
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
