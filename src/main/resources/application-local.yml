@@ -9,6 +9,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+  redis:
+    host: localhost
+    port: 6379
+    password: 11111111
   # h2 settings
   h2:
     console:
@@ -19,9 +23,14 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:payment-service;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=false;MODE=MySQL
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/payment-service
+#    username: ssafy
+#    password: ssafy
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -46,7 +55,7 @@ spring:
 
   cloud:
     discovery:
-      enabled: false
+      enabled: true
 
 eureka:
   client:
@@ -62,7 +71,16 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
-      springframework:
-        jdbc:
-          core:
-            JdbcTemplate: DEBUG
+
+kakaopay:
+  cid: ${cid}
+  order_approval_url : ${order_approval_url}
+  approval_url: ${approval_url}
+  fail_url: ${fail_url}
+  cancel_url: ${cancel_url}
+  admin_key: ${admin_key}
+
+success_url: ${success_redirect_url}
+
+endpoint:
+  member-service: localhost:8080

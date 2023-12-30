@@ -9,6 +9,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+  redis:
+    host: redis-cluster
+    port: 6379
+    password:
   # DB settings
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -45,4 +49,5 @@ eureka:
     # 따라서 쿠버네티스, 도커와 같이 임의의 호스트 이름을 가지는 경우는 false로 하면 클라이언트를 인식하지 못한다.
     prefer-ip-address: true
 
-
+endpoint:
+  member-service: http://member-service:8080
