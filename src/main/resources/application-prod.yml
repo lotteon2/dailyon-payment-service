@@ -12,11 +12,11 @@ spring:
   redis:
     host: redis-cluster
     port: 6379
-    password:
+    password: 11111111
   # DB settings
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/payment-service
+    url: jdbc:mysql://payment-db-service:3306/payment-service
     username: root
     password: 11111111
 
@@ -51,3 +51,10 @@ eureka:
 
 endpoint:
   member-service: http://member-service:8080
+
+logging:
+  level:
+    org:
+      apache.kafka: ERROR
+      kafka: ERROR
+      apache.zookeeper: ERROR
