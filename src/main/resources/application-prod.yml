@@ -12,7 +12,7 @@ spring:
   redis:
     host: redis-cluster
     port: 6379
-    password: 11111111
+    password:
   # DB settings
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
