@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static com.dailyon.paymentservice.domain.payment.entity.QPayment.payment;
 
@@ -22,7 +23,6 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
 
   @Override
   public Page<Payment> findByMemberId(Pageable pageable, Long memberId, PaymentType type) {
-
     List<Long> ids =
         queryFactory
             .select(payment.id)
@@ -46,6 +46,17 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
             .fetch();
 
     return PageableExecutionUtils.getPage(fetch, pageable, () -> getTotalPageCount(memberId));
+  }
+
+  @Override
+  public Optional<Payment> findByOrderNo(String orderNo) {
+    return Optional.ofNullable(
+        queryFactory
+            .selectFrom(payment)
+            .join(payment.kakaopayInfo)
+            .fetchJoin()
+            .where(payment.orderNo.eq(orderNo))
+            .fetchOne());
   }
 
   private BooleanExpression eqType(PaymentType type) {

@@ -72,15 +72,5 @@ logging:
       hibernate:
         SQL: DEBUG
 
-kakaopay:
-  cid: ${cid}
-  order_approval_url : ${order_approval_url}
-  approval_url: ${approval_url}
-  fail_url: ${fail_url}
-  cancel_url: ${cancel_url}
-  admin_key: ${admin_key}
-
-success_url: ${success_redirect_url}
-
 endpoint:
   member-service: localhost:8080

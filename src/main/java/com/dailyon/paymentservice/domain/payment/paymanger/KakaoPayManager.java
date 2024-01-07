@@ -4,7 +4,6 @@ import com.dailyon.paymentservice.domain.client.KakaopayFeignClient;
 import com.dailyon.paymentservice.domain.client.dto.KakaopayDTO;
 import com.dailyon.paymentservice.domain.payment.exception.ExpiredPaymentTimeException;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
-import com.dailyon.paymentservice.domain.payment.implement.PaymentReader;
 import com.dailyon.paymentservice.domain.payment.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType
 public class KakaoPayManager {
 
   private final KakaopayFeignClient client;
-  private final PaymentReader paymentReader;
   private final RedisRepository redisRepository; // TODO : DynamoDB 세팅되면 바꿈
 
   @Value("${kakaopay.cid}")
@@ -62,12 +60,11 @@ public class KakaoPayManager {
     return responseDTO;
   }
 
-  //  public KakaopayDTO.CancelDTO cancel(String orderId, Integer cancelAmount, Long memberId) {
-  //    Payment payment = paymentReader.readKakao(orderId, memberId);
-  //    MultiValueMap data = toPaymentCancelDTO(payment.getKakaopayInfo().getTid(), cancelAmount);
-  //    KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
-  //    return responseDTO;
-  //  }
+  public KakaopayDTO.CancelDTO cancel(String tid, Integer cancelAmount) {
+    MultiValueMap data = toPaymentCancelDTO(tid, cancelAmount);
+    KakaopayDTO.CancelDTO responseDTO = client.cancel("KakaoAK " + KAKAOPAY_ADMIN_KEY, data);
+    return responseDTO;
+  }
 
   private MultiValueMap toPaymentCancelDTO(String tid, Integer cancelAmount) {
     MultiValueMap<String, String> cancelDTO = new LinkedMultiValueMap<>();
@@ -75,6 +72,7 @@ public class KakaoPayManager {
     cancelDTO.add("tid", tid);
     cancelDTO.add("cancel_amount", cancelAmount.toString());
     cancelDTO.add("cancel_tax_free_amount", "0");
+    cancelDTO.add("cancel_vat_amount", "0");
     return cancelDTO;
   }
 
@@ -89,7 +87,7 @@ public class KakaoPayManager {
     readyDTOMap.add(
         "total_amount",
         request.getTotalAmount() <= 100 ? "100" : request.getTotalAmount().toString());
-    readyDTOMap.add("tax_free_amount", String.valueOf(request.getQuantity()));
+    readyDTOMap.add("tax_free_amount", "0");
     readyDTOMap.add(
         "approval_url",
         POINT.equals(request.getType())
@@ -97,6 +95,7 @@ public class KakaoPayManager {
             : ORDER_APPROVAL_URL + "/" + request.getOrderId());
     readyDTOMap.add("cancel_url", CANCEL_URL);
     readyDTOMap.add("fail_url", FAIL_URL);
+    readyDTOMap.add("vat_amount", "0");
     return readyDTOMap;
   }
 

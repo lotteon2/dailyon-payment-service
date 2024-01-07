@@ -46,6 +46,7 @@ public class PaymentFacadeRequest {
 
     public CreatePaymentServiceRequest toServiceRequest() {
       return CreatePaymentServiceRequest.builder()
+          .orderNo(orderId)
           .quantity(quantity)
           .deliveryFee(deliveryFee)
           .totalAmount(totalCouponDiscountPrice)

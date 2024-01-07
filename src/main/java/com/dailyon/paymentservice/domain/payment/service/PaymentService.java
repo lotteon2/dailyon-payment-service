@@ -29,4 +29,8 @@ public class PaymentService {
     Page<Payment> page = paymentReader.read(pageable, memberId, type);
     return page;
   }
+
+  public Payment getOrderPayment(String orderNo) {
+    return paymentReader.readByOrderNo(orderNo);
+  }
 }

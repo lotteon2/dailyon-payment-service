@@ -1,4 +1,4 @@
-package com.dailyon.paymentservice.domain.payment.message.dto.enums;
+package com.dailyon.paymentservice.domain.payment.kafka.dto.enums;
 
 import lombok.Getter;
 

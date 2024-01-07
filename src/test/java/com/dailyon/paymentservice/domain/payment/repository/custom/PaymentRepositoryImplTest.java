@@ -6,6 +6,7 @@ import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
+import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
   void findAllByMemberIdPaging() {
     // given
     for (int i = 1; i <= 9; i++) {
-      Payment save = paymentRepository.save(createPayment(2000 * i, POINT));
+      Payment save =
+          paymentRepository.save(createPayment(2000 * i, POINT, OrderNoGenerator.generate(1L)));
     }
     Pageable page = PageRequest.of(0, 8);
     // when
@@ -47,14 +49,14 @@ class PaymentRepositoryImplTest extends IntegrationTestSupport {
     return KakaopayInfo.builder().tid(tid).payment(payment).build();
   }
 
-  private Payment createPayment(Integer totalAmount, PaymentType type) {
+  private Payment createPayment(Integer totalAmount, PaymentType type, String orderNo) {
     return Payment.builder()
         .type(type)
+        .orderNo(orderNo)
         .method(KAKAOPAY)
         .status(COMPLETED)
         .totalAmount(totalAmount)
         .memberId(1L)
         .build();
   }
-
 }
