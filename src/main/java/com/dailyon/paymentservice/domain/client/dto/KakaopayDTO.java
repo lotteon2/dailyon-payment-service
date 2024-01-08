@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 
 public class KakaopayDTO {
 
-  @Getter @Setter
+  @Getter
+  @Setter
   @ToString
   @NoArgsConstructor
   @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -81,6 +82,7 @@ public class KakaopayDTO {
 
     public CreatePaymentServiceRequest toServiceRequest(PaymentType type, PaymentMethod method) {
       return CreatePaymentServiceRequest.builder()
+          .orderNo(orderId)
           .memberId(Long.valueOf(userId))
           .type(type)
           .method(method)

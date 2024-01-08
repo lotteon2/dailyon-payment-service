@@ -5,10 +5,10 @@ import com.dailyon.paymentservice.domain.payment.entity.KakaopayInfo;
 import com.dailyon.paymentservice.domain.payment.entity.Payment;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
-import com.dailyon.paymentservice.domain.payment.exception.PaymentNotFoundException;
 import com.dailyon.paymentservice.domain.payment.repository.KakaopayInfoRepository;
 import com.dailyon.paymentservice.domain.payment.repository.PaymentRepository;
 import com.dailyon.paymentservice.domain.payment.service.request.CreatePaymentServiceRequest;
+import com.dailyon.paymentservice.domain.payment.utils.OrderNoGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,6 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMeth
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentStatus.COMPLETED;
 import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType.POINT;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class PaymentServiceTest extends IntegrationTestSupport {
@@ -40,6 +39,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
         CreatePaymentServiceRequest.builder()
             .totalAmount(1000)
             .memberId(1L)
+            .orderNo("testOrderNo")
             .method(KAKAOPAY)
             .type(POINT)
             .build();
@@ -81,6 +81,7 @@ class PaymentServiceTest extends IntegrationTestSupport {
       Long memberId, PaymentMethod method, PaymentType type, Integer totalAmount) {
     return Payment.builder()
         .method(method)
+        .orderNo(OrderNoGenerator.generate(memberId))
         .type(type)
         .status(COMPLETED)
         .totalAmount(totalAmount)

@@ -15,13 +15,21 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(indexes = @Index(name = "idx_type", columnList = "type"))
+@Table(
+    indexes = {
+      @Index(name = "idx_type", columnList = "type"),
+      @Index(name = "idx_order_no", columnList = "orderNo")
+    })
 public class Payment extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotNull private Long memberId;
+
+  @NotNull
+  @Column(unique = true)
+  private String orderNo;
 
   @Enumerated(EnumType.STRING)
   @NotNull
@@ -43,11 +51,13 @@ public class Payment extends BaseEntity {
   @Builder
   private Payment(
       Long memberId,
+      String orderNo,
       PaymentType type,
       PaymentStatus status,
       PaymentMethod method,
       Integer totalAmount) {
     this.memberId = memberId;
+    this.orderNo = orderNo;
     this.type = type;
     this.status = status;
     this.method = method;

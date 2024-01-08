@@ -13,6 +13,7 @@ import static com.dailyon.paymentservice.domain.payment.entity.enums.PaymentStat
 @NoArgsConstructor
 public class CreatePaymentServiceRequest {
   private Long memberId;
+  private String orderNo;
   private PaymentType type; // ORDER, POINT
   private PaymentMethod method; // KAKAOPAY
   private Integer totalAmount;
@@ -25,6 +26,7 @@ public class CreatePaymentServiceRequest {
   @Builder
   private CreatePaymentServiceRequest(
       Long memberId,
+      String orderNo,
       PaymentType type,
       PaymentMethod method,
       Integer totalAmount,
@@ -33,6 +35,7 @@ public class CreatePaymentServiceRequest {
       int totalCouponDiscountPrice,
       int usedPoints) {
     this.memberId = memberId;
+    this.orderNo = orderNo;
     this.type = type;
     this.method = method;
     this.totalAmount = totalAmount;
@@ -45,11 +48,11 @@ public class CreatePaymentServiceRequest {
   public Payment toEntity() {
     return Payment.builder()
         .memberId(memberId)
+        .orderNo(orderNo)
         .type(type)
         .status(COMPLETED)
         .method(method)
         .totalAmount(totalAmount)
         .build();
   }
-
 }

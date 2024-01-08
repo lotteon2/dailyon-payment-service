@@ -1,10 +1,11 @@
-package com.dailyon.paymentservice.domain.payment.message;
+package com.dailyon.paymentservice.domain.payment.kafka;
 
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentMethod;
 import com.dailyon.paymentservice.domain.payment.entity.enums.PaymentType;
 import com.dailyon.paymentservice.domain.payment.facades.PaymentFacade;
 import com.dailyon.paymentservice.domain.payment.facades.request.PaymentFacadeRequest;
-import com.dailyon.paymentservice.domain.payment.message.dto.OrderDTO;
+import com.dailyon.paymentservice.domain.payment.kafka.dto.OrderDTO;
+import com.dailyon.paymentservice.domain.payment.kafka.dto.RefundDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,21 @@ public class PaymentEventListener {
       paymentEventProducer.paymentFail(message);
     } finally {
       ack.acknowledge();
+    }
+  }
+
+  @KafkaListener(topics = "create-refund")
+  public void cancel(String message, Acknowledgment ack) {
+    log.info("create-refund");
+    RefundDTO refundDTO = null;
+    try {
+      refundDTO = mapper.readValue(message, RefundDTO.class);
+      paymentFacade.cancelPayments(refundDTO);
+      ack.acknowledge();
+    } catch (JsonProcessingException e) {
+      log.error("직렬화 실패");
+    } catch (Exception e) {
+      log.error("환불 처리 중 예외발생 : {} ", e.getMessage());
     }
   }
 }
