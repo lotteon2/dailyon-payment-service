@@ -1,14 +1,12 @@
 package com.dailyon.paymentservice.domain.payment.kafka.dto;
 
 import com.dailyon.paymentservice.domain.payment.kafka.dto.enums.OrderEvent;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -21,6 +19,8 @@ public class OrderDTO {
   private Long memberId;
   private int usedPoints;
   private OrderEvent orderEvent;
+  private String orderType;
+  private String referralCode;
 
   @Getter
   @NoArgsConstructor
