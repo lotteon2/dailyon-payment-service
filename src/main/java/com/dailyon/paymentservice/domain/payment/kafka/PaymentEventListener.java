@@ -15,6 +15,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import static com.dailyon.paymentservice.domain.payment.kafka.dto.enums.OrderEvent.PAYMENT_FAIL;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -44,7 +46,8 @@ public class PaymentEventListener {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     } catch (Exception e) {
-      paymentEventProducer.paymentFail(message);
+      orderDTO.setOrderEvent(PAYMENT_FAIL);
+      paymentEventProducer.paymentFail(orderDTO);
     } finally {
       ack.acknowledge();
     }
