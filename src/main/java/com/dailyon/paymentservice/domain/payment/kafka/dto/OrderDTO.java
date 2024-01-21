@@ -21,6 +21,7 @@ public class OrderDTO {
   private OrderEvent orderEvent;
   private String orderType;
   private String referralCode;
+  private String auctionId;
 
   @Getter
   @NoArgsConstructor
